@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+/* === Custom Theme === */
+@theme {
+  --color-bg: #F0F0F0;
+  --color-pink: #FF4D6D;
+  --color-blue: #4361EE;
+  --color-yellow: #FFD60A;
+  --color-black: #0A0A0A;
+  --color-white: #FFFFFF;
+
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-serif: 'Playfair Display', serif;
+}
+
+/* === Base Styles === */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-black);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* === Scrollbar === */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-black);
+  border: 2px solid var(--color-bg);
+}
+
+/* === Selection === */
+::selection {
+  background: var(--color-yellow);
+  color: var(--color-black);
+}
