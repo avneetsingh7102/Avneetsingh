@@ -130,7 +130,7 @@ const PERSONAL_PROJECTS: PersonalProject[] = [
       "Auth + persistent session history with Supabase",
     ],
     githubUrl: "https://github.com/avneetsingh7102/Mentelchess",
-    liveUrl: "https://mentelchess.onrender.com",
+    liveUrl: "https://mentelchess-1.onrender.com",
     liveLabel: "Render",
   },
 ];
