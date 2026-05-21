@@ -836,8 +836,12 @@ function PersonalProjectModal({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
+          /* data-lenis-prevent: stops Lenis from hijacking wheel/touch inside the modal,
+             so this container's overflow-y-auto scroll behaves natively. */
+          data-lenis-prevent
           className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-black/60 backdrop-blur-sm px-4 py-10 md:py-16"
           onClick={onClose}
+          onWheel={(e) => e.stopPropagation()}
         >
           <motion.div
             initial={{ y: 40, scale: 0.96, opacity: 0 }}
