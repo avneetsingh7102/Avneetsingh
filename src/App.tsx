@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import Lenis from "lenis";
 import {
   Zap,
   Mail,
@@ -65,6 +66,7 @@ const NAV_LINKS = [
 ];
 
 type PersonalProject = {
+  slug: "defect" | "chess";
   color: string;
   accent: string;
   emoji: string;
@@ -81,6 +83,7 @@ type PersonalProject = {
 
 const PERSONAL_PROJECTS: PersonalProject[] = [
   {
+    slug: "defect",
     color: "bg-blue",
     accent: "text-blue",
     emoji: "🛡️",
@@ -107,6 +110,7 @@ const PERSONAL_PROJECTS: PersonalProject[] = [
     liveLabel: "Hugging Face Spaces",
   },
   {
+    slug: "chess",
     color: "bg-pink",
     accent: "text-pink",
     emoji: "♟️",
@@ -424,6 +428,264 @@ function Hero() {
   );
 }
 
+/* ─── Project Artifacts (animated visual previews on cards) ─── */
+
+function DefectArtifact({ size = "card" }: { size?: "card" | "modal" }) {
+  const isModal = size === "modal";
+  return (
+    <div className={`relative w-full ${isModal ? "aspect-[21/9]" : "aspect-[16/9]"} bg-black border-b-3 border-black overflow-hidden`}>
+      <svg
+        viewBox="0 0 320 180"
+        preserveAspectRatio="xMidYMid slice"
+        className="absolute inset-0 h-full w-full"
+        aria-hidden
+      >
+        <defs>
+          <pattern id="steel-hatch" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(45)">
+            <rect width="10" height="10" fill="#1a1a1a" />
+            <line x1="0" y1="0" x2="0" y2="10" stroke="#2c2c2c" strokeWidth="3" />
+          </pattern>
+          <pattern id="steel-dots" patternUnits="userSpaceOnUse" width="22" height="22">
+            <circle cx="2" cy="2" r="0.6" fill="#4a4a4a" />
+          </pattern>
+        </defs>
+        <rect width="320" height="180" fill="url(#steel-hatch)" />
+        <rect width="320" height="180" fill="url(#steel-dots)" />
+
+        {/* Crosshair center */}
+        <g opacity="0.35">
+          <line x1="160" y1="78" x2="160" y2="102" stroke="#FFD60A" strokeWidth="1" />
+          <line x1="148" y1="90" x2="172" y2="90" stroke="#FFD60A" strokeWidth="1" />
+          <circle cx="160" cy="90" r="3" fill="none" stroke="#FFD60A" strokeWidth="1" />
+        </g>
+
+        {/* Detection box 1 — Crazing (pink) */}
+        <motion.g
+          initial={{ opacity: 0, scale: 0.6 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          style={{ transformOrigin: "65px 56px" }}
+        >
+          <rect x="30" y="35" width="70" height="42" fill="rgba(255,77,109,0.10)" stroke="#FF4D6D" strokeWidth="2.5" />
+          {/* Corner ticks */}
+          <line x1="30" y1="35" x2="38" y2="35" stroke="#FF4D6D" strokeWidth="4" />
+          <line x1="30" y1="35" x2="30" y2="43" stroke="#FF4D6D" strokeWidth="4" />
+          <line x1="100" y1="77" x2="92" y2="77" stroke="#FF4D6D" strokeWidth="4" />
+          <line x1="100" y1="77" x2="100" y2="69" stroke="#FF4D6D" strokeWidth="4" />
+        </motion.g>
+
+        {/* Detection box 2 — Pitted (blue) */}
+        <motion.g
+          initial={{ opacity: 0, scale: 0.6 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.4, delay: 0.5 }}
+          style={{ transformOrigin: "197px 107px" }}
+        >
+          <rect x="170" y="80" width="55" height="55" fill="rgba(67,97,238,0.10)" stroke="#4361EE" strokeWidth="2.5" />
+          <line x1="170" y1="80" x2="178" y2="80" stroke="#4361EE" strokeWidth="4" />
+          <line x1="170" y1="80" x2="170" y2="88" stroke="#4361EE" strokeWidth="4" />
+          <line x1="225" y1="135" x2="217" y2="135" stroke="#4361EE" strokeWidth="4" />
+          <line x1="225" y1="135" x2="225" y2="127" stroke="#4361EE" strokeWidth="4" />
+        </motion.g>
+
+        {/* Detection box 3 — Scratch (yellow) */}
+        <motion.g
+          initial={{ opacity: 0, scale: 0.6 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.4, delay: 0.8 }}
+          style={{ transformOrigin: "265px 57px" }}
+        >
+          <rect x="240" y="40" width="50" height="35" fill="rgba(255,214,10,0.12)" stroke="#FFD60A" strokeWidth="2.5" />
+          <line x1="240" y1="40" x2="248" y2="40" stroke="#FFD60A" strokeWidth="4" />
+          <line x1="240" y1="40" x2="240" y2="48" stroke="#FFD60A" strokeWidth="4" />
+          <line x1="290" y1="75" x2="282" y2="75" stroke="#FFD60A" strokeWidth="4" />
+          <line x1="290" y1="75" x2="290" y2="67" stroke="#FFD60A" strokeWidth="4" />
+        </motion.g>
+
+        {/* Scanning line */}
+        <motion.line
+          x1="0" x2="320"
+          stroke="#FFD60A"
+          strokeWidth="1.5"
+          opacity="0.55"
+          initial={{ y1: 0, y2: 0 }}
+          animate={{ y1: [0, 180, 0], y2: [0, 180, 0] }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: "linear" }}
+        />
+      </svg>
+
+      {/* Class labels (top corners) */}
+      <div className="absolute top-2 left-2 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-pink text-white px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        Crazing · 0.92
+      </div>
+      <div className="absolute top-2 right-2 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-yellow text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        Scratch · 0.76
+      </div>
+      <div className="absolute bottom-2 left-2 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-blue text-white px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        Pitted · 0.87
+      </div>
+
+      {/* Live indicator bottom-right */}
+      <div className="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-black text-white px-1.5 py-0.5 border-2 border-yellow">
+        <motion.span
+          className="inline-block h-1 w-1 rounded-full bg-yellow"
+          animate={{ opacity: [1, 0.2, 1] }}
+          transition={{ duration: 1.2, repeat: Infinity }}
+        />
+        YOLOv8 · 160fps
+      </div>
+    </div>
+  );
+}
+
+function ChessArtifact({ size = "card" }: { size?: "card" | "modal" }) {
+  const isModal = size === "modal";
+  /* Mini board state for a small visual — Knight on f3 about to move to e5 */
+  const board: string[][] = [
+    ["♜", "", "", "♛", "♚", "", "", "♜"],
+    ["♟", "♟", "♟", "", "", "♟", "♟", "♟"],
+    ["", "", "", "", "", "", "", ""],
+    ["", "", "", "", "♟", "", "", ""],
+    ["", "", "", "", "♙", "", "", ""],
+    ["", "", "", "", "", "♘", "", ""],
+    ["♙", "♙", "♙", "♙", "", "♙", "♙", "♙"],
+    ["♖", "", "♗", "♕", "♔", "♗", "♘", "♖"],
+  ];
+
+  return (
+    <div className={`relative w-full ${isModal ? "aspect-[21/9]" : "aspect-[16/9]"} bg-bg border-b-3 border-black overflow-hidden flex items-center justify-center px-6`}>
+      {/* Soft grid background */}
+      <div className="absolute inset-0 opacity-30" style={{
+        backgroundImage: "linear-gradient(#0A0A0A14 1px, transparent 1px), linear-gradient(90deg, #0A0A0A14 1px, transparent 1px)",
+        backgroundSize: "16px 16px",
+      }} />
+
+      {/* Voice command bubble (top-left) */}
+      <motion.div
+        initial={{ opacity: 0, x: -10, y: -6 }}
+        whileInView={{ opacity: 1, x: 0, y: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.4, delay: 0.5 }}
+        className="absolute top-2 left-2 inline-flex items-center gap-1.5 font-mono text-[0.55rem] md:text-[0.65rem] font-bold tracking-widest uppercase bg-pink text-white px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#0A0A0A] z-10"
+      >
+        {/* mini waveform */}
+        <span className="flex items-end gap-[2px] h-3">
+          {[3, 8, 5, 10, 4].map((h, i) => (
+            <motion.span
+              key={i}
+              className="block w-[2px] bg-white"
+              animate={{ height: [`${h}px`, `${h + 4}px`, `${h}px`] }}
+              transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.08 }}
+            />
+          ))}
+        </span>
+        “Knight f3”
+      </motion.div>
+
+      {/* Mini board */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 10 }}
+        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.5, delay: 0.2, type: "spring", stiffness: 220, damping: 22 }}
+        className="relative grid grid-cols-8 border-2 border-black shadow-[4px_4px_0px_#0A0A0A] bg-white"
+        style={{ width: isModal ? "32%" : "55%", maxWidth: "260px" }}
+      >
+        {board.flat().map((piece, i) => {
+          const row = Math.floor(i / 8);
+          const col = i % 8;
+          const dark = (row + col) % 2 === 1;
+          /* f3 → e5: f3 is col=5,row=5 (index 5*8+5=45). e5 is col=4,row=3 (3*8+4=28). */
+          const isFrom = i === 45;
+          const isTo = i === 28;
+          return (
+            <div
+              key={i}
+              className={`aspect-square relative flex items-center justify-center text-[0.55rem] md:text-[0.75rem] leading-none ${
+                dark ? "bg-black text-white" : "bg-white text-black"
+              }`}
+            >
+              {isFrom && (
+                <motion.span
+                  className="absolute inset-[2px] ring-2 ring-pink"
+                  animate={{ opacity: [1, 0.4, 1] }}
+                  transition={{ duration: 1.2, repeat: Infinity }}
+                />
+              )}
+              {isTo && (
+                <motion.span
+                  className="absolute inset-[2px] ring-2 ring-yellow"
+                  animate={{ opacity: [0.4, 1, 0.4] }}
+                  transition={{ duration: 1.2, repeat: Infinity, delay: 0.6 }}
+                />
+              )}
+              <span className="relative z-[1]">{piece}</span>
+            </div>
+          );
+        })}
+
+        {/* Move arrow from f3 to e5 (SVG overlay) */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          viewBox="0 0 8 8"
+          preserveAspectRatio="none"
+          aria-hidden
+        >
+          <defs>
+            <marker id="arrowhead-chess" markerWidth="3" markerHeight="3" refX="2" refY="1.5" orient="auto">
+              <path d="M0,0 L3,1.5 L0,3 z" fill="#FF4D6D" />
+            </marker>
+          </defs>
+          <motion.line
+            x1="5.5" y1="5.5"  /* center of f3 */
+            x2="4.5" y2="3.5"  /* center of e5 */
+            stroke="#FF4D6D"
+            strokeWidth="0.18"
+            strokeLinecap="round"
+            markerEnd="url(#arrowhead-chess)"
+            initial={{ pathLength: 0, opacity: 0 }}
+            whileInView={{ pathLength: 1, opacity: 1 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.7, delay: 0.9 }}
+          />
+        </svg>
+      </motion.div>
+
+      {/* Status badge (bottom-right) */}
+      <div className="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-black text-white px-1.5 py-0.5 border-2 border-yellow">
+        <motion.span
+          className="inline-block h-1 w-1 rounded-full bg-yellow"
+          animate={{ opacity: [1, 0.2, 1] }}
+          transition={{ duration: 1.2, repeat: Infinity }}
+        />
+        Voice · ON
+      </div>
+
+      {/* Difficulty pills (bottom-left) */}
+      <div className="absolute bottom-2 left-2 hidden sm:flex items-center gap-1">
+        {["Beg", "Int", "Adv", "Master"].map((lvl, i) => (
+          <span
+            key={lvl}
+            className={`font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase px-1.5 py-0.5 border-2 border-black ${
+              i === 2 ? "bg-yellow text-black" : "bg-white text-black/50"
+            }`}
+          >
+            {lvl}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProjectArtifact({ slug, size }: { slug: PersonalProject["slug"]; size?: "card" | "modal" }) {
+  if (slug === "defect") return <DefectArtifact size={size} />;
+  return <ChessArtifact size={size} />;
+}
+
 function PersonalProjectCard({
   project,
   index,
@@ -460,7 +722,11 @@ function PersonalProjectCard({
         variants={{ hover: { width: 24, transition: { duration: 0.2 } } }}
       />
 
-      <div className="flex-1 p-6 md:p-8">
+      <div className="flex-1 flex flex-col">
+        {/* Visual artifact — full-bleed at the top of card content */}
+        <ProjectArtifact slug={project.slug} />
+
+        <div className="p-6 md:p-8">
         {/* Live badge + emoji row */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -536,6 +802,7 @@ function PersonalProjectCard({
             </a>
           </div>
         </div>
+        </div>
       </div>
     </motion.button>
   );
@@ -593,6 +860,11 @@ function PersonalProjectModal({
             >
               <X size={20} />
             </button>
+
+            {/* Full-bleed artifact preview at the top of the modal */}
+            <div className="pl-8 md:pl-12">
+              <ProjectArtifact slug={project.slug} size="modal" />
+            </div>
 
             <div className="pl-8 md:pl-12 pr-6 md:pr-10 py-8 md:py-12">
               {/* Header */}
@@ -1074,6 +1346,42 @@ function Footer() {
 
 export default function App() {
   const [activeProject, setActiveProject] = useState<PersonalProject | null>(null);
+
+  /* Smooth, lerped scroll for that "high-FPS" feel. Pairs cleanly with Framer Motion's useScroll. */
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.15,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      touchMultiplier: 1.2,
+    });
+
+    let rafId = 0;
+    const raf = (time: number) => {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
+    rafId = requestAnimationFrame(raf);
+
+    /* Hand off in-page anchor links to Lenis so #section jumps stay smooth */
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest('a[href^="#"]') as HTMLAnchorElement | null;
+      if (!target) return;
+      const id = target.getAttribute("href");
+      if (!id || id === "#") return;
+      const el = document.querySelector(id);
+      if (!el) return;
+      e.preventDefault();
+      lenis.scrollTo(el as HTMLElement, { offset: -60 });
+    };
+    document.addEventListener("click", handleAnchorClick);
+
+    return () => {
+      document.removeEventListener("click", handleAnchorClick);
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-bg text-black relative z-0 selection:bg-yellow selection:text-black">

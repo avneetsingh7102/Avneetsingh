@@ -15,8 +15,20 @@
 }
 
 /* === Base Styles === */
-html {
-  scroll-behavior: smooth;
+/* Native CSS scroll-behavior is intentionally NOT set —
+   Lenis interpolates scroll via requestAnimationFrame for
+   that higher-perceived-FPS feel and would conflict with CSS smooth. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+html.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 body {
