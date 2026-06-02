@@ -66,7 +66,8 @@ const NAV_LINKS = [
 ];
 
 type PersonalProject = {
-  slug: "defect" | "chess";
+  slug: "defect" | "chess" | "fire" | "robot";
+  status: "deployed" | "wip";
   color: string;
   accent: string;
   emoji: string;
@@ -76,14 +77,15 @@ type PersonalProject = {
   longDescription: string;
   techStack: { category: string; items: string[] }[];
   highlights: string[];
-  githubUrl: string;
-  liveUrl: string;
-  liveLabel: string;
+  githubUrl?: string;
+  liveUrl?: string;
+  liveLabel?: string;
 };
 
 const PERSONAL_PROJECTS: PersonalProject[] = [
   {
     slug: "defect",
+    status: "deployed",
     color: "bg-blue",
     accent: "text-blue",
     emoji: "🛡️",
@@ -111,6 +113,7 @@ const PERSONAL_PROJECTS: PersonalProject[] = [
   },
   {
     slug: "chess",
+    status: "deployed",
     color: "bg-pink",
     accent: "text-pink",
     emoji: "♟️",
@@ -136,6 +139,57 @@ const PERSONAL_PROJECTS: PersonalProject[] = [
     githubUrl: "https://github.com/avneetsingh7102/Mentelchess",
     liveUrl: "https://mentelchess-1.onrender.com",
     liveLabel: "Render",
+  },
+  {
+    slug: "fire",
+    status: "wip",
+    color: "bg-pink",
+    accent: "text-pink",
+    emoji: "🔥",
+    title: "Fire & Smoke Detection",
+    tagline: "Real-time safety monitoring for factory floors",
+    description:
+      "Computer vision classifier that flags fire and smoke from industrial CCTV feeds the moment they appear. Reuses the YOLOv8 + ONNX foundation from my defect work, retargeted for safety.",
+    longDescription:
+      "An always-on safety net for industrial environments. The model continuously watches CCTV feeds and raises an alert the instant flame or smoke patterns appear — long before traditional sensors would trigger. Built on the same YOLOv8 + ONNX Runtime pipeline I used for steel defect detection, but trained on fire/smoke datasets and tuned for low-false-positive operation in noisy factory scenes. Currently iterating on dataset curation, edge-deployment quantisation, and a multi-camera dashboard for plant managers.",
+    techStack: [
+      { category: "Computer Vision", items: ["YOLOv8", "OpenCV", "ONNX Runtime", "PyTorch"] },
+      { category: "Data", items: ["FireNet dataset", "Custom labelling", "Augmentation"] },
+      { category: "Backend", items: ["Python", "Flask", "RTSP ingest"] },
+      { category: "Target", items: ["Edge devices", "Multi-camera dashboard"] },
+    ],
+    highlights: [
+      "Detects flame + smoke separately for better incident classification",
+      "Targets <100ms latency on Raspberry Pi-class hardware",
+      "Tuned for noisy industrial scenes — minimises false positives",
+      "Foundation reused from production-ready defect detection pipeline",
+    ],
+  },
+  {
+    slug: "robot",
+    status: "wip",
+    color: "bg-yellow",
+    accent: "text-black",
+    emoji: "🤖",
+    title: "NLP Voice-Controlled Robotic Arm",
+    tagline: "Program industrial robots with plain English",
+    description:
+      "Say what you want — \"pick up the red box and place it on the conveyor\". Whisper transcribes, an LLM converts intent into a task plan, a Python controller runs it in Webots, and the robot speaks status back via pyttsx3.",
+    longDescription:
+      "A bridge between LLM reasoning and classical robotic precision. The operator speaks a normal command; Whisper runs locally for low-latency, offline transcription; Claude/GPT translates the intent into a structured task plan (target objects, coordinates, gripper actions); a Python controller dispatches the plan to a Webots simulation that mirrors a real industrial cell. The robot speaks status back through pyttsx3, so the whole loop is hands-free. The premise: factory robots already have sub-millimetre precision — the missing layer is letting non-engineers program them with natural language.",
+    techStack: [
+      { category: "Voice → Text", items: ["Whisper (local)"] },
+      { category: "Intent → Plan", items: ["Claude API", "GPT API", "Prompt design"] },
+      { category: "Simulation", items: ["Webots", "Industrial arm model"] },
+      { category: "Controller", items: ["Python", "Task-plan executor"] },
+      { category: "Feedback", items: ["pyttsx3 (TTS)"] },
+    ],
+    highlights: [
+      "Voice → intent → plan → execute — one closed loop",
+      "Local Whisper keeps voice transcription low-latency and offline",
+      "LLM provides the reasoning layer over deterministic robot precision",
+      "Webots simulation mirrors a real industrial pick-and-place cell",
+    ],
   },
 ];
 
@@ -681,9 +735,280 @@ function ChessArtifact({ size = "card" }: { size?: "card" | "modal" }) {
   );
 }
 
+function FireSmokeArtifact({ size = "card" }: { size?: "card" | "modal" }) {
+  const isModal = size === "modal";
+  return (
+    <div className={`relative w-full ${isModal ? "aspect-[21/9]" : "aspect-[16/9]"} bg-black border-b-3 border-black overflow-hidden`}>
+      <svg
+        viewBox="0 0 320 180"
+        preserveAspectRatio="xMidYMid slice"
+        className="absolute inset-0 h-full w-full"
+        aria-hidden
+      >
+        <defs>
+          <pattern id="floor-hatch" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(45)">
+            <rect width="10" height="10" fill="#1a1a1a" />
+            <line x1="0" y1="0" x2="0" y2="10" stroke="#2c2c2c" strokeWidth="3" />
+          </pattern>
+          <radialGradient id="fire-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#FF4D6D" stopOpacity="0.55" />
+            <stop offset="60%" stopColor="#FFD60A" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="#000" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="smoke-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#FFD60A" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#000" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        <rect width="320" height="180" fill="url(#floor-hatch)" />
+
+        {/* Factory silhouette */}
+        <g fill="#0c0c0c" stroke="#262626" strokeWidth="0.8">
+          <rect x="20" y="120" width="50" height="40" />
+          <rect x="35" y="100" width="20" height="20" />
+          <rect x="80" y="135" width="35" height="25" />
+          <rect x="225" y="115" width="65" height="45" />
+          <rect x="245" y="95" width="25" height="20" />
+          <polygon points="155,150 170,120 185,150" />
+        </g>
+
+        {/* Fire glow + flicker */}
+        <motion.ellipse
+          cx="170" cy="105" rx="42" ry="32"
+          fill="url(#fire-glow)"
+          animate={{ opacity: [0.85, 1, 0.7, 1, 0.9] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+        />
+        {/* Smoke glow above the fire */}
+        <motion.ellipse
+          cx="170" cy="55" rx="55" ry="28"
+          fill="url(#smoke-glow)"
+          animate={{ opacity: [0.4, 0.7, 0.4], cy: [55, 50, 55] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* FIRE bounding box */}
+        <motion.g
+          initial={{ opacity: 0, scale: 0.6 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+          style={{ transformOrigin: "170px 105px" }}
+        >
+          <rect x="138" y="86" width="64" height="42" fill="rgba(255,77,109,0.10)" stroke="#FF4D6D" strokeWidth="2.5" />
+          <line x1="138" y1="86" x2="146" y2="86" stroke="#FF4D6D" strokeWidth="4" />
+          <line x1="138" y1="86" x2="138" y2="94" stroke="#FF4D6D" strokeWidth="4" />
+          <line x1="202" y1="128" x2="194" y2="128" stroke="#FF4D6D" strokeWidth="4" />
+          <line x1="202" y1="128" x2="202" y2="120" stroke="#FF4D6D" strokeWidth="4" />
+        </motion.g>
+
+        {/* SMOKE bounding box */}
+        <motion.g
+          initial={{ opacity: 0, scale: 0.6 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.4, delay: 0.6 }}
+          style={{ transformOrigin: "170px 50px" }}
+        >
+          <rect x="118" y="32" width="104" height="38" fill="rgba(255,214,10,0.10)" stroke="#FFD60A" strokeWidth="2.5" strokeDasharray="6 4" />
+        </motion.g>
+
+        {/* Smoke particles rising */}
+        {[0, 1, 2, 3].map((i) => (
+          <motion.circle
+            key={i}
+            cx={155 + i * 8}
+            cy={82}
+            r="1.6"
+            fill="#FFD60A"
+            opacity="0.55"
+            animate={{ cy: [82, 30], opacity: [0.55, 0] }}
+            transition={{ duration: 3.5, repeat: Infinity, delay: i * 0.7, ease: "easeOut" }}
+          />
+        ))}
+      </svg>
+
+      {/* Labels */}
+      <div className="absolute top-2 left-2 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-pink text-white px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        🔥 Fire · 0.94
+      </div>
+      <div className="absolute top-2 right-2 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-yellow text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        Smoke · 0.87
+      </div>
+      <div className="absolute bottom-2 left-2 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-black text-white px-1.5 py-0.5 border-2 border-yellow">
+        CCTV-04 · Factory A
+      </div>
+      {/* Building / WIP indicator instead of LIVE */}
+      <div className="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-black text-yellow px-1.5 py-0.5 border-2 border-yellow">
+        <motion.span
+          className="inline-block h-1 w-1 rounded-full bg-yellow"
+          animate={{ opacity: [1, 0.2, 1] }}
+          transition={{ duration: 1, repeat: Infinity }}
+        />
+        Training · v0.3
+      </div>
+    </div>
+  );
+}
+
+function RoboticArmArtifact({ size = "card" }: { size?: "card" | "modal" }) {
+  const isModal = size === "modal";
+  return (
+    <div className={`relative w-full ${isModal ? "aspect-[21/9]" : "aspect-[16/9]"} bg-bg border-b-3 border-black overflow-hidden`}>
+      {/* Subtle grid backdrop, same as chess */}
+      <div className="absolute inset-0 opacity-30" style={{
+        backgroundImage: "linear-gradient(#0A0A0A14 1px, transparent 1px), linear-gradient(90deg, #0A0A0A14 1px, transparent 1px)",
+        backgroundSize: "16px 16px",
+      }} />
+
+      {/* Pipeline overlay: voice → LLM → arm */}
+      <svg
+        viewBox="0 0 320 180"
+        preserveAspectRatio="xMidYMid slice"
+        className="absolute inset-0 h-full w-full"
+        aria-hidden
+      >
+        <defs>
+          <marker id="arrow-robot" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 z" fill="#0A0A0A" />
+          </marker>
+        </defs>
+
+        {/* Stage connectors */}
+        <motion.line
+          x1="78" y1="92" x2="120" y2="92"
+          stroke="#0A0A0A" strokeWidth="2"
+          markerEnd="url(#arrow-robot)"
+          initial={{ pathLength: 0 }}
+          whileInView={{ pathLength: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        />
+        <motion.line
+          x1="184" y1="92" x2="226" y2="92"
+          stroke="#0A0A0A" strokeWidth="2"
+          markerEnd="url(#arrow-robot)"
+          initial={{ pathLength: 0 }}
+          whileInView={{ pathLength: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.5, delay: 1.0 }}
+        />
+
+        {/* === Robot arm (right side) === */}
+        <motion.g
+          initial={{ opacity: 0, x: 10 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.5, delay: 1.2 }}
+        >
+          {/* Base */}
+          <rect x="252" y="138" width="40" height="14" fill="#FFD60A" stroke="#0A0A0A" strokeWidth="2" />
+          <rect x="260" y="128" width="24" height="10" fill="#0A0A0A" />
+          {/* Joint 1 */}
+          <circle cx="272" cy="128" r="4" fill="#FF4D6D" stroke="#0A0A0A" strokeWidth="2" />
+          {/* Animated arm segments — slight oscillation */}
+          <motion.g
+            animate={{ rotate: [0, -8, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            style={{ transformOrigin: "272px 128px" }}
+          >
+            <line x1="272" y1="128" x2="272" y2="92" stroke="#0A0A0A" strokeWidth="4" strokeLinecap="round" />
+            <circle cx="272" cy="92" r="4" fill="#FF4D6D" stroke="#0A0A0A" strokeWidth="2" />
+            <motion.g
+              animate={{ rotate: [0, 14, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              style={{ transformOrigin: "272px 92px" }}
+            >
+              <line x1="272" y1="92" x2="296" y2="74" stroke="#0A0A0A" strokeWidth="4" strokeLinecap="round" />
+              {/* Gripper */}
+              <g transform="translate(296,74)">
+                <line x1="0" y1="0" x2="0" y2="-6" stroke="#0A0A0A" strokeWidth="2" />
+                <line x1="-4" y1="-6" x2="4" y2="-6" stroke="#0A0A0A" strokeWidth="2.5" />
+                <line x1="-4" y1="-6" x2="-4" y2="-2" stroke="#0A0A0A" strokeWidth="2.5" />
+                <line x1="4" y1="-6" x2="4" y2="-2" stroke="#0A0A0A" strokeWidth="2.5" />
+              </g>
+            </motion.g>
+          </motion.g>
+
+          {/* Target cube (red) under the gripper */}
+          <motion.g
+            initial={{ y: 6, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.4, delay: 1.5 }}
+          >
+            <rect x="236" y="138" width="14" height="14" fill="#FF4D6D" stroke="#0A0A0A" strokeWidth="2" />
+          </motion.g>
+        </motion.g>
+      </svg>
+
+      {/* Stage 1: voice bubble (top-left) */}
+      <motion.div
+        initial={{ opacity: 0, x: -10 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.4, delay: 0.2 }}
+        className="absolute top-3 left-3 inline-flex flex-col gap-1"
+      >
+        <span className="inline-flex items-center gap-1.5 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-pink text-white px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+          <span className="flex items-end gap-[2px] h-3">
+            {[3, 7, 4, 9, 3].map((h, i) => (
+              <motion.span
+                key={i}
+                className="block w-[2px] bg-white"
+                animate={{ height: [`${h}px`, `${h + 4}px`, `${h}px`] }}
+                transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.08 }}
+              />
+            ))}
+          </span>
+          Voice
+        </span>
+        <span className="font-mono text-[0.55rem] md:text-[0.65rem] font-bold bg-white text-black px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+          “pick the red cube”
+        </span>
+      </motion.div>
+
+      {/* Stage 2: LLM task plan (middle) */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.4, delay: 0.8 }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex flex-col gap-1 items-center"
+      >
+        <span className="font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-yellow text-black px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+          LLM · Plan
+        </span>
+        <div className="font-mono text-[0.5rem] md:text-[0.6rem] leading-tight bg-black text-white px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#0A0A0A] text-left max-w-[110px]">
+          1. locate(red)<br/>
+          2. grip()<br/>
+          3. lift(20)
+        </div>
+      </motion.div>
+
+      {/* WIP indicator */}
+      <div className="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-black text-yellow px-1.5 py-0.5 border-2 border-yellow">
+        <motion.span
+          className="inline-block h-1 w-1 rounded-full bg-yellow"
+          animate={{ opacity: [1, 0.2, 1] }}
+          transition={{ duration: 1, repeat: Infinity }}
+        />
+        Webots · Sim
+      </div>
+
+      {/* Pipeline label bottom-left */}
+      <div className="absolute bottom-2 left-2 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-white text-black px-1.5 py-0.5 border-2 border-black">
+        Whisper → LLM → Webots
+      </div>
+    </div>
+  );
+}
+
 function ProjectArtifact({ slug, size }: { slug: PersonalProject["slug"]; size?: "card" | "modal" }) {
   if (slug === "defect") return <DefectArtifact size={size} />;
-  return <ChessArtifact size={size} />;
+  if (slug === "chess") return <ChessArtifact size={size} />;
+  if (slug === "fire") return <FireSmokeArtifact size={size} />;
+  return <RoboticArmArtifact size={size} />;
 }
 
 function PersonalProjectCard({
@@ -727,20 +1052,31 @@ function PersonalProjectCard({
         <ProjectArtifact slug={project.slug} />
 
         <div className="p-6 md:p-8">
-        {/* Live badge + emoji row */}
+        {/* Live / WIP badge + emoji row */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             <span className="text-3xl md:text-4xl" aria-hidden>
               {project.emoji}
             </span>
-            <span className="inline-flex items-center gap-1.5 font-mono text-[0.65rem] font-bold tracking-widest uppercase border-2 border-black bg-yellow px-2.5 py-1 shadow-[2px_2px_0px_#0A0A0A]">
-              <motion.span
-                className="inline-block h-1.5 w-1.5 rounded-full bg-black"
-                animate={{ opacity: [1, 0.3, 1] }}
-                transition={{ duration: 1.6, repeat: Infinity }}
-              />
-              Live
-            </span>
+            {project.status === "deployed" ? (
+              <span className="inline-flex items-center gap-1.5 font-mono text-[0.65rem] font-bold tracking-widest uppercase border-2 border-black bg-yellow px-2.5 py-1 shadow-[2px_2px_0px_#0A0A0A]">
+                <motion.span
+                  className="inline-block h-1.5 w-1.5 rounded-full bg-black"
+                  animate={{ opacity: [1, 0.3, 1] }}
+                  transition={{ duration: 1.6, repeat: Infinity }}
+                />
+                Live
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 font-mono text-[0.65rem] font-bold tracking-widest uppercase border-2 border-black bg-black text-yellow px-2.5 py-1 shadow-[2px_2px_0px_#0A0A0A]">
+                <motion.span
+                  className="inline-block h-1.5 w-1.5 rounded-full bg-yellow"
+                  animate={{ opacity: [1, 0.3, 1] }}
+                  transition={{ duration: 1.2, repeat: Infinity }}
+                />
+                Building
+              </span>
+            )}
           </div>
           <Rocket size={20} className="text-black/30 group-hover:text-black transition-colors shrink-0" />
         </div>
@@ -780,26 +1116,34 @@ function PersonalProjectCard({
             </motion.span>
           </span>
           <div className="flex items-center gap-2">
-            <a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              aria-label={`${project.title} GitHub`}
-              className="flex h-9 w-9 items-center justify-center border-2 border-black bg-white shadow-[2px_2px_0px_#0A0A0A] hover:bg-black hover:text-white transition-colors"
-            >
-              <GithubIcon size={16} />
-            </a>
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              aria-label={`${project.title} live demo`}
-              className={`flex h-9 w-9 items-center justify-center border-2 border-black ${project.color} shadow-[2px_2px_0px_#0A0A0A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all`}
-            >
-              <ExternalLink size={16} />
-            </a>
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                aria-label={`${project.title} GitHub`}
+                className="flex h-9 w-9 items-center justify-center border-2 border-black bg-white shadow-[2px_2px_0px_#0A0A0A] hover:bg-black hover:text-white transition-colors"
+              >
+                <GithubIcon size={16} />
+              </a>
+            )}
+            {project.liveUrl ? (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                aria-label={`${project.title} live demo`}
+                className={`flex h-9 w-9 items-center justify-center border-2 border-black ${project.color} shadow-[2px_2px_0px_#0A0A0A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all`}
+              >
+                <ExternalLink size={16} />
+              </a>
+            ) : (
+              <span className="font-mono text-[0.55rem] font-bold tracking-widest uppercase text-black/50 px-2 border-2 border-black/20 py-1.5">
+                Demo soon
+              </span>
+            )}
           </div>
         </div>
         </div>
@@ -876,10 +1220,21 @@ function PersonalProjectModal({
                 <span className="text-4xl md:text-5xl" aria-hidden>
                   {project.emoji}
                 </span>
-                <span className="inline-flex items-center gap-1.5 font-mono text-[0.65rem] font-bold tracking-widest uppercase border-2 border-black bg-yellow px-2.5 py-1 shadow-[2px_2px_0px_#0A0A0A]">
-                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-black" />
-                  Deployed · {project.liveLabel}
-                </span>
+                {project.status === "deployed" ? (
+                  <span className="inline-flex items-center gap-1.5 font-mono text-[0.65rem] font-bold tracking-widest uppercase border-2 border-black bg-yellow px-2.5 py-1 shadow-[2px_2px_0px_#0A0A0A]">
+                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-black" />
+                    Deployed · {project.liveLabel}
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 font-mono text-[0.65rem] font-bold tracking-widest uppercase border-2 border-black bg-black text-yellow px-2.5 py-1 shadow-[2px_2px_0px_#0A0A0A]">
+                    <motion.span
+                      className="inline-block h-1.5 w-1.5 rounded-full bg-yellow"
+                      animate={{ opacity: [1, 0.3, 1] }}
+                      transition={{ duration: 1.2, repeat: Infinity }}
+                    />
+                    Work in progress
+                  </span>
+                )}
               </div>
 
               <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-[1.05]">
@@ -891,26 +1246,35 @@ function PersonalProjectModal({
 
               {/* Action buttons */}
               <div className="mt-6 flex flex-wrap gap-3">
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-3 font-mono text-xs md:text-sm font-bold uppercase tracking-wider border-3 border-black bg-black text-white shadow-[4px_4px_0px_#0A0A0A] hover:bg-pink transition-colors"
-                >
-                  <Rocket size={16} />
-                  View Live Demo
-                  <ExternalLink size={14} />
-                </a>
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-3 font-mono text-xs md:text-sm font-bold uppercase tracking-wider border-3 border-black bg-white shadow-[4px_4px_0px_#0A0A0A] hover:bg-yellow transition-colors"
-                >
-                  <GithubIcon size={16} />
-                  Source Code
-                  <ExternalLink size={14} />
-                </a>
+                {project.liveUrl ? (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-3 font-mono text-xs md:text-sm font-bold uppercase tracking-wider border-3 border-black bg-black text-white shadow-[4px_4px_0px_#0A0A0A] hover:bg-pink transition-colors"
+                  >
+                    <Rocket size={16} />
+                    View Live Demo
+                    <ExternalLink size={14} />
+                  </a>
+                ) : (
+                  <span className="inline-flex items-center gap-2 px-5 py-3 font-mono text-xs md:text-sm font-bold uppercase tracking-wider border-3 border-black/30 bg-bg text-black/40 cursor-not-allowed">
+                    <Rocket size={16} />
+                    Demo coming soon
+                  </span>
+                )}
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-3 font-mono text-xs md:text-sm font-bold uppercase tracking-wider border-3 border-black bg-white shadow-[4px_4px_0px_#0A0A0A] hover:bg-yellow transition-colors"
+                  >
+                    <GithubIcon size={16} />
+                    Source Code
+                    <ExternalLink size={14} />
+                  </a>
+                )}
               </div>
 
               {/* Description */}
@@ -971,25 +1335,31 @@ function PersonalProjectModal({
               {/* Footer with re-emphasised live link */}
               <div className="mt-12 border-t-3 border-black pt-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <p className="font-mono text-xs tracking-wider font-bold text-black/60">
-                  Recruiter? Try it live and read the code.
+                  {project.status === "deployed"
+                    ? "Recruiter? Try it live and read the code."
+                    : "Currently building — code & demo will land here as it ships."}
                 </p>
                 <div className="flex gap-2">
-                  <a
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 border-2 border-black font-mono text-xs font-bold uppercase tracking-wider bg-white shadow-[2px_2px_0px_#0A0A0A] hover:bg-yellow transition-colors"
-                  >
-                    <GithubIcon size={14} /> Code
-                  </a>
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center gap-2 px-4 py-2 border-2 border-black font-mono text-xs font-bold uppercase tracking-wider ${project.color} shadow-[2px_2px_0px_#0A0A0A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all`}
-                  >
-                    <Rocket size={14} /> Live
-                  </a>
+                  {project.githubUrl && (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 border-2 border-black font-mono text-xs font-bold uppercase tracking-wider bg-white shadow-[2px_2px_0px_#0A0A0A] hover:bg-yellow transition-colors"
+                    >
+                      <GithubIcon size={14} /> Code
+                    </a>
+                  )}
+                  {project.liveUrl && (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex items-center gap-2 px-4 py-2 border-2 border-black font-mono text-xs font-bold uppercase tracking-wider ${project.color} shadow-[2px_2px_0px_#0A0A0A] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all`}
+                    >
+                      <Rocket size={14} /> Live
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -1027,8 +1397,9 @@ function PersonalProjects({
           </div>
           <motion.div style={{ x: xDivider }} className="h-1 bg-black w-1/4 min-w-[200px] mt-1" />
           <p className="mt-6 max-w-2xl font-serif text-base md:text-lg leading-relaxed text-black/70">
-            Projects I built end-to-end on my own time — designed, coded, deployed, and live on the
-            internet. Click any card to see the full tech stack and links.
+            Projects I built end-to-end on my own time — designed, coded, and either live on the
+            internet or actively being built. Shipped work sits at the top; what I'm building now
+            sits below. Click any card to see the tech stack and links.
           </p>
         </motion.div>
 
