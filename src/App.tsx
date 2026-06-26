@@ -80,6 +80,8 @@ type PersonalProject = {
   githubUrl?: string;
   liveUrl?: string;
   liveLabel?: string;
+  videoUrl?: string;
+  posterUrl?: string;
 };
 
 const PERSONAL_PROJECTS: PersonalProject[] = [
@@ -167,29 +169,35 @@ const PERSONAL_PROJECTS: PersonalProject[] = [
   },
   {
     slug: "robot",
-    status: "wip",
+    status: "deployed",
     color: "bg-yellow",
     accent: "text-black",
     emoji: "🤖",
-    title: "NLP Voice-Controlled Robotic Arm",
-    tagline: "Program industrial robots with plain English",
+    title: "Voice-Controlled Robot Arm",
+    tagline: "State a goal in plain English — it plans, acts & self-checks",
     description:
-      "Say what you want — \"pick up the red box and place it on the conveyor\". Whisper transcribes, an LLM converts intent into a task plan, a Python controller runs it in Webots, and the robot speaks status back via pyttsx3.",
+      "Tell a simulated Franka-Panda arm a goal in plain language — \"sort everything into its colour bucket\". A Groq LLM turns it into a plan, a Python controller runs it collision-free in PyBullet, and the robot verifies its own work — looping until the goal is actually done.",
     longDescription:
-      "A bridge between LLM reasoning and classical robotic precision. The operator speaks a normal command; Whisper runs locally for low-latency, offline transcription; Claude/GPT translates the intent into a structured task plan (target objects, coordinates, gripper actions); a Python controller dispatches the plan to a Webots simulation that mirrors a real industrial cell. The robot speaks status back through pyttsx3, so the whole loop is hands-free. The premise: factory robots already have sub-millimetre precision — the missing layer is letting non-engineers program them with natural language.",
+      "A robot arm you command with a sentence. Speech (Whisper) or text becomes a goal; a Groq-hosted LLM reads the goal and the scene and returns high-level actions — never raw coordinates — while deterministic code turns those into collision-safe motion and senses the moment an object lands. The idea I'm most proud of is a human one: the brain tells a one-shot TASK (\"drop the hammer\") from an open-ended JOB (\"sort everything\"). A task is finished the instant it acts; a job loops plan → act → re-check → fix until the world matches the goal, with hard caps so it never loops forever. One brain runs five scenes — sorting, stacking, a kitchen, a workshop and painting. Honest status: the decision-making and self-correcting control loop are solid; grasping irregular shapes is still the weak link, so end-to-end accuracy isn't high yet — which is exactly what I'm improving next.",
     techStack: [
-      { category: "Voice → Text", items: ["Whisper (local)"] },
-      { category: "Intent → Plan", items: ["Claude API", "GPT API", "Prompt design"] },
-      { category: "Simulation", items: ["Webots", "Industrial arm model"] },
-      { category: "Controller", items: ["Python", "Task-plan executor"] },
-      { category: "Feedback", items: ["pyttsx3 (TTS)"] },
+      { category: "Voice → Text", items: ["Whisper"] },
+      { category: "Reasoning", items: ["Groq LLM (llama-3.3-70b)", "Task vs Job intent", "Prompt design"] },
+      { category: "Simulation", items: ["PyBullet", "Franka-Panda arm"] },
+      { category: "Control", items: ["Python", "Closed-loop verify/retry", "Contact-based grasping"] },
+      { category: "Memory", items: ["Persistent lessons", "Skill library"] },
+      { category: "Demo", items: ["Gradio", "Hugging Face Spaces"] },
     ],
     highlights: [
-      "Voice → intent → plan → execute — one closed loop",
-      "Local Whisper keeps voice transcription low-latency and offline",
-      "LLM provides the reasoning layer over deterministic robot precision",
-      "Webots simulation mirrors a real industrial pick-and-place cell",
+      "Task vs Job — tells a one-shot order from an open-ended mission, and loops only when it needs to",
+      "Closed loop — observes the real result, retries failures, and stops itself when the goal holds",
+      "Bounded autonomy — hard caps on planning rounds and time so a job never runs away",
+      "One brain, five scenes — sorter, builder, kitchen, workshop and painter",
+      "Honest: the control loop is reliable; grasping accuracy is the next thing to improve",
     ],
+    liveUrl: "https://huggingface.co/spaces/avneetssing/voice-robot-arm",
+    liveLabel: "Hugging Face Spaces",
+    videoUrl: `${import.meta.env.BASE_URL}robot-demo.mp4`,
+    posterUrl: `${import.meta.env.BASE_URL}robot-poster.jpg`,
   },
 ];
 
@@ -1209,9 +1217,23 @@ function PersonalProjectModal({
               <X size={20} />
             </button>
 
-            {/* Full-bleed artifact preview at the top of the modal */}
+            {/* Full-bleed artifact preview at the top of the modal — a real demo
+                video when the project has one, otherwise the animated artifact. */}
             <div className="pl-8 md:pl-12">
-              <ProjectArtifact slug={project.slug} size="modal" />
+              {project.videoUrl ? (
+                <video
+                  src={project.videoUrl}
+                  poster={project.posterUrl}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  controls
+                  className="w-full aspect-[21/9] object-cover bg-black border-b-3 border-black"
+                />
+              ) : (
+                <ProjectArtifact slug={project.slug} size="modal" />
+              )}
             </div>
 
             <div className="pl-8 md:pl-12 pr-6 md:pr-10 py-8 md:py-12">
