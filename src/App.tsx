@@ -194,6 +194,7 @@ const PERSONAL_PROJECTS: PersonalProject[] = [
       "One brain, five scenes — sorter, builder, kitchen, workshop and painter",
       "Honest: the control loop is reliable; grasping accuracy is the next thing to improve",
     ],
+    githubUrl: "https://github.com/avneetsingh7102/Voice-Controlled-Robot-Arm",
     liveUrl: "https://huggingface.co/spaces/avneetssing/voice-robot-arm",
     liveLabel: "Hugging Face Spaces",
     videoUrl: `${import.meta.env.BASE_URL}robot-demo.mp4`,
