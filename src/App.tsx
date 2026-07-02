@@ -205,6 +205,7 @@ const PERSONAL_PROJECTS: PersonalProject[] = [
 const PROJECTS = [
   {
     color: "bg-pink",
+    artifact: "reflect" as const,
     title: "Reflect — VR Journaling & Reflection",
     tags: ["Unity XR", "Python", "AI Topic Mapping", "UX Research", "Prompt Engineering"],
     description: "A VR experience where users journal their thoughts inside an immersive simulation and explore emotional themes as AI-grouped topic nodes on a neural map canvas. Led full UX research from user interviews to iterative prototype testing. Built AI-powered topic segmentation to cluster unstructured journal data into meaningful emotional patterns.",
@@ -212,6 +213,7 @@ const PROJECTS = [
   },
   {
     color: "bg-blue",
+    artifact: "shelter" as const,
     title: "Data Design for Humanity",
     tags: ["Python", "Machine Learning", "Rhino 3D", "Parametric Design", "Spatial Analysis"],
     description: "Applied ML and computational design to optimise emergency shelter layouts for displaced populations in the DR Congo. Built spatial models to analyse habitability constraints and generated layout configurations maximising liveable space and resource efficiency. Used Rhino 3D for parametric visualisation of proposed shelter arrangements.",
@@ -219,6 +221,7 @@ const PROJECTS = [
   },
   {
     color: "bg-yellow",
+    artifact: "pharmacy" as const,
     title: "Autonomous Pharmacy Robot",
     tags: ["ROS 2", "Fusion 360", "Arduino", "OOP Python", "Hardware Prototyping"],
     description: "Designed and prototyped an autonomous medication-dispensing robot for unmanned night pharmacies. Integrated ROS 2 for navigation and obstacle avoidance, Fusion 360 for mechanical design, and Arduino for hardware control. Delivered a functional prototype with modular, fully tested Python code.",
@@ -296,6 +299,30 @@ function FloatingShapes() {
         animate={{ y: [0, -60, 0], x: [0, 40, 0], rotate: [0, 90, 0] }}
         transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
         className="absolute top-[40%] right-[50%] w-40 h-40 border-4 border-black/10 rounded-tr-3xl"
+      />
+    </div>
+  );
+}
+
+/* ─── Scroll-parallax section decorations ─── */
+function ParallaxDecor({ flip = false }: { flip?: boolean }) {
+  const { scrollYProgress } = useScroll();
+  const ySlow = useTransform(scrollYProgress, [0, 1], [0, flip ? 140 : -140]);
+  const yFast = useTransform(scrollYProgress, [0, 1], [0, flip ? -260 : 260]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [0, flip ? -60 : 60]);
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
+      <motion.div
+        style={{ y: ySlow, rotate }}
+        className={`absolute ${flip ? "right-[6%] top-16" : "left-[4%] top-24"} h-24 w-24 border-3 border-black/10`}
+      />
+      <motion.div
+        style={{ y: yFast }}
+        className={`absolute ${flip ? "left-[8%] bottom-24" : "right-[7%] bottom-32"} h-16 w-16 rounded-full border-3 border-black/10`}
+      />
+      <motion.div
+        style={{ y: ySlow }}
+        className={`absolute ${flip ? "left-[45%] top-8" : "right-[38%] top-10"} h-4 w-4 bg-yellow/60 border-2 border-black/20`}
       />
     </div>
   );
@@ -531,6 +558,9 @@ function DefectArtifact({ size = "card" }: { size?: "card" | "modal" }) {
           style={{ transformOrigin: "65px 56px" }}
         >
           <rect x="30" y="35" width="70" height="42" fill="rgba(255,77,109,0.10)" stroke="#FF4D6D" strokeWidth="2.5" />
+          {/* the crazing itself — hairline crack web */}
+          <path d="M40 44 l12 7 l-7 8 l14 9 l-6 6" stroke="#FF4D6D" strokeWidth="1.1" fill="none" opacity="0.75" />
+          <path d="M58 40 l9 10 l11 -4 l8 12" stroke="#FF4D6D" strokeWidth="0.9" fill="none" opacity="0.55" />
           {/* Corner ticks */}
           <line x1="30" y1="35" x2="38" y2="35" stroke="#FF4D6D" strokeWidth="4" />
           <line x1="30" y1="35" x2="30" y2="43" stroke="#FF4D6D" strokeWidth="4" />
@@ -547,6 +577,13 @@ function DefectArtifact({ size = "card" }: { size?: "card" | "modal" }) {
           style={{ transformOrigin: "197px 107px" }}
         >
           <rect x="170" y="80" width="55" height="55" fill="rgba(67,97,238,0.10)" stroke="#4361EE" strokeWidth="2.5" />
+          {/* the pitting itself — corrosion speckle */}
+          <g fill="#4361EE" opacity="0.7">
+            <circle cx="182" cy="92" r="1.6" /><circle cx="196" cy="88" r="1.1" />
+            <circle cx="207" cy="97" r="1.9" /><circle cx="188" cy="108" r="1.3" />
+            <circle cx="203" cy="115" r="1.6" /><circle cx="214" cy="106" r="1.0" />
+            <circle cx="179" cy="121" r="1.4" /><circle cx="195" cy="126" r="1.8" />
+          </g>
           <line x1="170" y1="80" x2="178" y2="80" stroke="#4361EE" strokeWidth="4" />
           <line x1="170" y1="80" x2="170" y2="88" stroke="#4361EE" strokeWidth="4" />
           <line x1="225" y1="135" x2="217" y2="135" stroke="#4361EE" strokeWidth="4" />
@@ -562,6 +599,9 @@ function DefectArtifact({ size = "card" }: { size?: "card" | "modal" }) {
           style={{ transformOrigin: "265px 57px" }}
         >
           <rect x="240" y="40" width="50" height="35" fill="rgba(255,214,10,0.12)" stroke="#FFD60A" strokeWidth="2.5" />
+          {/* the scratch itself — gouge streaks */}
+          <line x1="246" y1="47" x2="284" y2="66" stroke="#FFD60A" strokeWidth="1.6" opacity="0.85" strokeLinecap="round" />
+          <line x1="250" y1="44" x2="279" y2="58" stroke="#FFD60A" strokeWidth="0.8" opacity="0.5" strokeLinecap="round" />
           <line x1="240" y1="40" x2="248" y2="40" stroke="#FFD60A" strokeWidth="4" />
           <line x1="240" y1="40" x2="240" y2="48" stroke="#FFD60A" strokeWidth="4" />
           <line x1="290" y1="75" x2="282" y2="75" stroke="#FFD60A" strokeWidth="4" />
@@ -717,6 +757,20 @@ function ChessArtifact({ size = "card" }: { size?: "card" | "modal" }) {
         </svg>
       </motion.div>
 
+      {/* Engine badge (top-right) — thinking bar */}
+      <div className="absolute top-2 right-2 inline-flex flex-col gap-1 items-end z-10">
+        <span className="font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-blue text-white px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+          Minimax · d4
+        </span>
+        <span className="h-1.5 w-16 border-2 border-black bg-white overflow-hidden">
+          <motion.span
+            className="block h-full bg-blue"
+            animate={{ width: ["15%", "85%", "40%", "95%"] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </span>
+      </div>
+
       {/* Status badge (bottom-right) */}
       <div className="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-black text-white px-1.5 py-0.5 border-2 border-yellow">
         <motion.span
@@ -787,6 +841,21 @@ function FireSmokeArtifact({ size = "card" }: { size?: "card" | "modal" }) {
           fill="url(#fire-glow)"
           animate={{ opacity: [0.85, 1, 0.7, 1, 0.9] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+        />
+        {/* The flames themselves — flickering tongues */}
+        <motion.polygon
+          points="152,126 158,104 163,113 170,92 177,113 183,102 188,126"
+          fill="#FF4D6D" opacity="0.9"
+          style={{ transformOrigin: "170px 126px" }}
+          animate={{ scaleY: [1, 1.18, 0.92, 1.1, 1], scaleX: [1, 0.96, 1.04, 1] }}
+          transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.polygon
+          points="160,126 165,110 170,117 175,106 180,126"
+          fill="#FFD60A" opacity="0.95"
+          style={{ transformOrigin: "170px 126px" }}
+          animate={{ scaleY: [1, 0.85, 1.15, 1] }}
+          transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
         />
         {/* Smoke glow above the fire */}
         <motion.ellipse
@@ -989,25 +1058,34 @@ function RoboticArmArtifact({ size = "card" }: { size?: "card" | "modal" }) {
           LLM · Plan
         </span>
         <div className="font-mono text-[0.5rem] md:text-[0.6rem] leading-tight bg-black text-white px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#0A0A0A] text-left max-w-[110px]">
-          1. locate(red)<br/>
-          2. grip()<br/>
-          3. lift(20)
+          1. pick(red)<br/>
+          2. place(bucket)<br/>
+          3. verify ✓
         </div>
+        <motion.span
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.4, delay: 1.8 }}
+          className="font-mono text-[0.45rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-white text-black px-1.5 py-0.5 border-2 border-black"
+        >
+          re-plans until done
+        </motion.span>
       </motion.div>
 
-      {/* WIP indicator */}
+      {/* Live indicator */}
       <div className="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-black text-yellow px-1.5 py-0.5 border-2 border-yellow">
         <motion.span
           className="inline-block h-1 w-1 rounded-full bg-yellow"
           animate={{ opacity: [1, 0.2, 1] }}
           transition={{ duration: 1, repeat: Infinity }}
         />
-        Webots · Sim
+        PyBullet · Live
       </div>
 
       {/* Pipeline label bottom-left */}
       <div className="absolute bottom-2 left-2 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-white text-black px-1.5 py-0.5 border-2 border-black">
-        Whisper → LLM → Webots
+        Whisper → LLM → PyBullet
       </div>
     </div>
   );
@@ -1018,6 +1096,267 @@ function ProjectArtifact({ slug, size }: { slug: PersonalProject["slug"]; size?:
   if (slug === "chess") return <ChessArtifact size={size} />;
   if (slug === "fire") return <FireSmokeArtifact size={size} />;
   return <RoboticArmArtifact size={size} />;
+}
+
+/* ─── University Project Artifacts (fill their parent panel) ─── */
+
+function ReflectArtifact() {
+  /* An AI topic map of journal entries — floating emotion nodes inside a VR frame */
+  const nodes: [number, number, string, number][] = [
+    [66, 62, "calm", 9], [150, 42, "stress", 12], [236, 64, "family", 10],
+    [104, 122, "work", 11], [196, 128, "growth", 9], [270, 112, "sleep", 8],
+  ];
+  const edges: [number, number][] = [[0, 1], [1, 2], [1, 3], [3, 4], [2, 5], [4, 5], [0, 3]];
+  return (
+    <div className="relative h-full w-full bg-black overflow-hidden">
+      <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid meet" className="absolute inset-0 h-full w-full" aria-hidden>
+        <defs>
+          <radialGradient id="reflect-halo" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#FF4D6D" stopOpacity="0.32" />
+            <stop offset="100%" stopColor="#000" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        <ellipse cx="160" cy="92" rx="120" ry="70" fill="url(#reflect-halo)" />
+
+        {/* constellation edges */}
+        {edges.map(([a, b], i) => (
+          <motion.line
+            key={i}
+            x1={nodes[a][0]} y1={nodes[a][1]} x2={nodes[b][0]} y2={nodes[b][1]}
+            stroke="#ffffff" strokeWidth="0.8" opacity="0.28"
+            initial={{ pathLength: 0 }}
+            whileInView={{ pathLength: 1 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.8, delay: 0.3 + i * 0.12 }}
+          />
+        ))}
+
+        {/* emotion nodes — gently breathing */}
+        {nodes.map(([x, y, label, r], i) => (
+          <motion.g
+            key={label}
+            animate={{ y: [0, i % 2 ? 4 : -4, 0] }}
+            transition={{ duration: 4 + i, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <motion.circle
+              cx={x} cy={y} r={r}
+              fill={i === 1 ? "#FF4D6D" : "#0A0A0A"}
+              stroke={i === 1 ? "#FF4D6D" : "#ffffff"}
+              strokeWidth="2"
+              initial={{ scale: 0 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.15 + i * 0.1 }}
+              style={{ transformOrigin: `${x}px ${y}px` }}
+            />
+            {i === 1 && (
+              <motion.circle
+                cx={x} cy={y} r={r}
+                fill="none" stroke="#FF4D6D" strokeWidth="1.5"
+                animate={{ r: [r, r + 10], opacity: [0.8, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+              />
+            )}
+            <text x={x} y={y + r + 11} textAnchor="middle" fill="#ffffff" opacity="0.85"
+              style={{ font: "bold 8px 'JetBrains Mono', monospace", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+              {label}
+            </text>
+          </motion.g>
+        ))}
+      </svg>
+
+      {/* VR viewport corner brackets */}
+      {[
+        "top-2 left-2 border-t-3 border-l-3", "top-2 right-2 border-t-3 border-r-3",
+        "bottom-2 left-2 border-b-3 border-l-3", "bottom-2 right-2 border-b-3 border-r-3",
+      ].map((pos) => (
+        <span key={pos} className={`absolute ${pos} h-5 w-5 border-white/70 pointer-events-none`} />
+      ))}
+
+      {/* journal snippet chip */}
+      <motion.div
+        initial={{ opacity: 0, x: -10 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.4, delay: 0.6 }}
+        className="absolute top-3 left-8 font-mono text-[0.55rem] md:text-[0.6rem] font-bold bg-white text-black px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#FF4D6D]"
+      >
+        “today felt lighter…”
+      </motion.div>
+      <div className="absolute top-3 right-8 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-pink text-white px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        AI topic map
+      </div>
+      <div className="absolute bottom-3 left-8 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-black text-white px-1.5 py-0.5 border-2 border-pink">
+        <motion.span className="inline-block h-1 w-1 rounded-full bg-pink"
+          animate={{ opacity: [1, 0.2, 1] }} transition={{ duration: 1.2, repeat: Infinity }} />
+        Unity XR · In-headset
+      </div>
+    </div>
+  );
+}
+
+function ShelterArtifact() {
+  /* Parametric shelter layout optimising itself on a blueprint grid */
+  const cells: [number, number][] = [];
+  [46, 78, 110, 174, 206, 238].forEach((x) => [52, 86, 120].forEach((y) => cells.push([x, y])));
+  return (
+    <div
+      className="relative h-full w-full bg-blue overflow-hidden"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(255,255,255,0.22) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.22) 1px, transparent 1px)",
+        backgroundSize: "18px 18px",
+      }}
+    >
+      <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid meet" className="absolute inset-0 h-full w-full" aria-hidden>
+
+        {/* site boundary */}
+        <rect x="30" y="38" width="260" height="112" fill="none" stroke="#ffffff" strokeWidth="1.5" strokeDasharray="7 4" opacity="0.8" />
+        {/* central aisle */}
+        <line x1="160" y1="38" x2="160" y2="150" stroke="#FFD60A" strokeWidth="1.2" strokeDasharray="4 4" opacity="0.9" />
+
+        {/* shelter units snap into the optimised grid */}
+        {cells.map(([x, y], i) => (
+          <motion.g key={i}
+            initial={{ opacity: 0, scale: 0.3 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.15 + i * 0.07 }}
+            style={{ transformOrigin: `${x + 11}px ${y + 8}px` }}
+          >
+            <rect x={x} y={y} width="22" height="16"
+              fill={i === 7 ? "#FFD60A" : "#ffffff"} stroke="#0A0A0A" strokeWidth="1.5" />
+            <line x1={x} y1={y + 8} x2={x + 22} y2={y + 8} stroke="#0A0A0A" strokeWidth="0.6" opacity="0.4" />
+          </motion.g>
+        ))}
+
+        {/* optimiser sweep */}
+        <motion.line
+          y1="38" y2="150" stroke="#FFD60A" strokeWidth="1.5" opacity="0.7"
+          initial={{ x1: 30, x2: 30 }}
+          animate={{ x1: [30, 290, 30], x2: [30, 290, 30] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* dimension line */}
+        <g stroke="#ffffff" strokeWidth="1" opacity="0.75">
+          <line x1="30" y1="160" x2="290" y2="160" />
+          <line x1="30" y1="156" x2="30" y2="164" />
+          <line x1="290" y1="156" x2="290" y2="164" />
+        </g>
+        <text x="160" y="171" textAnchor="middle" fill="#ffffff" opacity="0.85"
+          style={{ font: "bold 8px 'JetBrains Mono', monospace", letterSpacing: "0.1em" }}>
+          120 m — 18 UNITS / ROW
+        </text>
+      </svg>
+
+      <div className="absolute top-2 left-2 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-white text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        Layout v27 · parametric
+      </div>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.6 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ type: "spring", stiffness: 280, damping: 16, delay: 1.4 }}
+        className="absolute top-2 right-2 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-yellow text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]"
+      >
+        +38% liveable space
+      </motion.div>
+      <div className="absolute bottom-2 left-2 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-black text-white px-1.5 py-0.5 border-2 border-white/60">
+        DR Congo · shelter grid
+      </div>
+      <div className="absolute bottom-2 right-2 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-white text-black px-1.5 py-0.5 border-2 border-black">
+        Rhino 3D · ML
+      </div>
+    </div>
+  );
+}
+
+function PharmacyArtifact() {
+  /* Night pharmacy floor plan — the robot navigates shelves to the dispense counter */
+  return (
+    <div
+      className="relative h-full w-full overflow-hidden"
+      style={{
+        backgroundColor: "#111111",
+        backgroundImage:
+          "linear-gradient(#242424 1px, transparent 1px), linear-gradient(90deg, #242424 1px, transparent 1px)",
+        backgroundSize: "18px 18px",
+      }}
+    >
+      <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid meet" className="absolute inset-0 h-full w-full" aria-hidden>
+
+        {/* pharmacy walls */}
+        <rect x="22" y="26" width="276" height="130" fill="none" stroke="#3a3a3a" strokeWidth="3" />
+        {/* shelf rows */}
+        {[52, 88, 124].map((y) => (
+          <g key={y}>
+            <rect x="60" y={y} width="86" height="14" fill="#1e1e1e" stroke="#4a4a4a" strokeWidth="1.5" />
+            <rect x="170" y={y} width="86" height="14" fill="#1e1e1e" stroke="#4a4a4a" strokeWidth="1.5" />
+          </g>
+        ))}
+        {/* dispense counter */}
+        <rect x="262" y="70" width="26" height="44" fill="#FFD60A" stroke="#0A0A0A" strokeWidth="2" />
+        <text x="275" y="95" textAnchor="middle" fill="#0A0A0A" transform="rotate(90 275 92)"
+          style={{ font: "bold 7px 'JetBrains Mono', monospace", letterSpacing: "0.12em" }}>
+          DISPENSE
+        </text>
+
+        {/* planned path */}
+        <motion.path
+          d="M40 142 L40 76 L155 76 L155 110 L240 110 L252 92"
+          fill="none" stroke="#FFD60A" strokeWidth="1.5" strokeDasharray="5 4" opacity="0.85"
+          initial={{ pathLength: 0 }}
+          whileInView={{ pathLength: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 1.2, delay: 0.3 }}
+        />
+        {/* waypoints */}
+        {[[40, 76], [155, 76], [155, 110], [240, 110]].map(([x, y], i) => (
+          <circle key={i} cx={x} cy={y} r="2.4" fill="#0A0A0A" stroke="#FFD60A" strokeWidth="1.5" />
+        ))}
+
+        {/* the robot — driving the route with a LIDAR heartbeat */}
+        <motion.g
+          animate={{ x: [0, 0, 115, 115, 200, 212, 0], y: [0, -66, -66, -32, -32, -50, 0] }}
+          transition={{ duration: 9, times: [0, 0.22, 0.45, 0.6, 0.82, 0.92, 1], repeat: Infinity, ease: "linear", delay: 1 }}
+        >
+          <motion.circle cx="40" cy="142" r="6" fill="none" stroke="#FFD60A" strokeWidth="1.2"
+            animate={{ r: [6, 20], opacity: [0.7, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }} />
+          <rect x="33" y="135" width="14" height="14" fill="#FFD60A" stroke="#0A0A0A" strokeWidth="2" rx="2" />
+          <circle cx="40" cy="142" r="2" fill="#0A0A0A" />
+        </motion.g>
+      </svg>
+
+      <div className="absolute top-2 left-2 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-yellow text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        ROS 2 · Nav
+      </div>
+      <div className="absolute top-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-black text-white px-1.5 py-0.5 border-2 border-white/50">
+        <motion.span className="inline-block h-1 w-1 rounded-full bg-yellow"
+          animate={{ opacity: [1, 0.2, 1] }} transition={{ duration: 1.4, repeat: Infinity }} />
+        Night shift · 02:47
+      </div>
+      <motion.div
+        animate={{ opacity: [0, 0, 1, 1, 0], scale: [0.7, 0.7, 1, 1, 0.7] }}
+        transition={{ duration: 9, times: [0, 0.86, 0.92, 0.98, 1], repeat: Infinity, delay: 1 }}
+        className="absolute bottom-2 right-2 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-yellow text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]"
+      >
+        Dispensed ✓ · slot B3
+      </motion.div>
+      <div className="absolute bottom-2 left-2 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-black text-white px-1.5 py-0.5 border-2 border-yellow">
+        Obstacle avoided ✓
+      </div>
+    </div>
+  );
+}
+
+type UniArtifactKind = "reflect" | "shelter" | "pharmacy";
+
+function UniArtifact({ kind }: { kind: UniArtifactKind }) {
+  if (kind === "reflect") return <ReflectArtifact />;
+  if (kind === "shelter") return <ShelterArtifact />;
+  return <PharmacyArtifact />;
 }
 
 function PersonalProjectCard({
@@ -1403,7 +1742,8 @@ function PersonalProjects({
 
   return (
     <section id="personal" className="px-6 py-24 md:py-32 relative">
-      <div className="mx-auto max-w-6xl">
+      <ParallaxDecor />
+      <div className="mx-auto max-w-6xl relative">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -1448,7 +1788,8 @@ function Projects() {
 
   return (
     <section id="projects" className="px-6 py-24 md:py-32 relative">
-      <div className="mx-auto max-w-6xl">
+      <ParallaxDecor flip />
+      <div className="mx-auto max-w-6xl relative">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -1486,42 +1827,49 @@ function Projects() {
                   hover: { height: "12px", transition: { duration: 0.2 } }
                 }}
               />
-              <div className="p-8 md:p-12">
-                <h3 className="text-3xl font-black leading-tight md:text-5xl tracking-tight">
-                  {proj.title}
-                </h3>
-
-                {/* Tags */}
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {proj.tags.map((tag) => (
-                    <span key={tag} className="font-mono text-xs font-bold px-3 py-1.5 border-2 border-black rounded-full bg-white shadow-[2px_2px_0px_#0A0A0A]">
-                      {tag}
-                    </span>
-                  ))}
+              <div className="grid md:grid-cols-5">
+                {/* Animated artifact panel */}
+                <div className="relative h-56 sm:h-64 md:h-auto md:col-span-2 border-b-3 md:border-b-0 md:border-r-3 border-black">
+                  <UniArtifact kind={proj.artifact} />
                 </div>
 
-                {/* Description */}
-                <p className="mt-8 max-w-4xl font-serif text-lg leading-relaxed md:text-xl">
-                  {proj.description}
-                </p>
+                <div className="p-8 md:p-10 md:col-span-3">
+                  <h3 className="text-3xl font-black leading-tight md:text-4xl tracking-tight">
+                    {proj.title}
+                  </h3>
 
-                {/* Link */}
-                <div className="mt-10 flex justify-end">
-                  <a
-                    href={proj.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-3 px-8 py-4 font-mono font-bold uppercase tracking-wider text-sm border-3 border-black bg-black text-white hover:bg-pink transition-colors group-hover:bg-pink relative overflow-hidden"
-                  >
-                    View Project
-                    <motion.div
-                      variants={{
-                        hover: { x: 5, transition: { type: "spring", bounce: 0.5 } }
-                      }}
+                  {/* Tags */}
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {proj.tags.map((tag) => (
+                      <span key={tag} className="font-mono text-xs font-bold px-3 py-1.5 border-2 border-black rounded-full bg-white shadow-[2px_2px_0px_#0A0A0A]">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Description */}
+                  <p className="mt-6 max-w-4xl font-serif text-lg leading-relaxed md:text-xl">
+                    {proj.description}
+                  </p>
+
+                  {/* Link */}
+                  <div className="mt-8 flex justify-end">
+                    <a
+                      href={proj.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-3 px-8 py-4 font-mono font-bold uppercase tracking-wider text-sm border-3 border-black bg-black text-white hover:bg-pink transition-colors group-hover:bg-pink relative overflow-hidden"
                     >
-                      <ArrowRight size={20} />
-                    </motion.div>
-                  </a>
+                      View Project
+                      <motion.div
+                        variants={{
+                          hover: { x: 5, transition: { type: "spring", bounce: 0.5 } }
+                        }}
+                      >
+                        <ArrowRight size={20} />
+                      </motion.div>
+                    </a>
+                  </div>
                 </div>
               </div>
             </motion.div>
