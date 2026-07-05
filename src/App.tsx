@@ -931,6 +931,10 @@ function FireSmokeArtifact({ size = "card" }: { size?: "card" | "modal" }) {
 
 function RoboticArmArtifact({ size = "card" }: { size?: "card" | "modal" }) {
   const isModal = size === "modal";
+  /* No diagram — just the robot at work: an endless pick → carry → drop loop
+     from a jumbled pile into four colour buckets. */
+  const CYCLE = 5.5;
+  const T = [0, 0.12, 0.2, 0.55, 0.68, 0.8, 1];
   return (
     <div className={`relative w-full ${isModal ? "aspect-[21/9]" : "aspect-[16/9]"} bg-bg border-b-3 border-black overflow-hidden`}>
       {/* Subtle grid backdrop, same as chess */}
@@ -939,141 +943,122 @@ function RoboticArmArtifact({ size = "card" }: { size?: "card" | "modal" }) {
         backgroundSize: "16px 16px",
       }} />
 
-      {/* Pipeline overlay: voice → LLM → arm */}
       <svg
         viewBox="0 0 320 180"
         preserveAspectRatio="xMidYMid slice"
         className="absolute inset-0 h-full w-full"
         aria-hidden
       >
-        <defs>
-          <marker id="arrow-robot" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-            <path d="M0,0 L6,3 L0,6 z" fill="#0A0A0A" />
-          </marker>
-        </defs>
+        {/* work table */}
+        <line x1="20" y1="150" x2="300" y2="150" stroke="#0A0A0A" strokeWidth="3" />
 
-        {/* Stage connectors */}
-        <motion.line
-          x1="78" y1="92" x2="120" y2="92"
-          stroke="#0A0A0A" strokeWidth="2"
-          markerEnd="url(#arrow-robot)"
-          initial={{ pathLength: 0 }}
-          whileInView={{ pathLength: 1 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-        />
-        <motion.line
-          x1="184" y1="92" x2="226" y2="92"
-          stroke="#0A0A0A" strokeWidth="2"
-          markerEnd="url(#arrow-robot)"
-          initial={{ pathLength: 0 }}
-          whileInView={{ pathLength: 1 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5, delay: 1.0 }}
-        />
+        {/* the unsorted pile (left) */}
+        <g stroke="#0A0A0A" strokeWidth="1.8">
+          <rect x="66" y="140" width="10" height="10" fill="#4361EE" />
+          <rect x="78" y="140" width="10" height="10" fill="#FFD60A" />
+          <rect x="90" y="140" width="10" height="10" fill="#FF4D6D" />
+          <rect x="102" y="140" width="10" height="10" fill="#2FBF71" />
+          <rect x="72" y="130" width="10" height="10" fill="#FF4D6D" transform="rotate(-8 77 135)" />
+          <rect x="86" y="130" width="10" height="10" fill="#4361EE" transform="rotate(6 91 135)" />
+          <rect x="96" y="120" width="10" height="10" fill="#FFD60A" transform="rotate(-12 101 125)" />
+        </g>
 
-        {/* === Robot arm (right side) === */}
+        {/* four colour buckets (right) with what's already sorted */}
+        {([
+          ["#FF4D6D", 196, 1], ["#4361EE", 223, 2], ["#FFD60A", 250, 1], ["#2FBF71", 277, 0],
+        ] as [string, number, number][]).map(([c, x, n]) => (
+          <g key={x}>
+            <path d={`M${x},132 v16 h20 v-16`} fill={`${c}40`} stroke="#0A0A0A" strokeWidth="2" />
+            {Array.from({ length: n }).map((_, i) => (
+              <rect key={i} x={x + 5.5} y={139 - i * 9} width="9" height="9" fill={c} stroke="#0A0A0A" strokeWidth="1.5" />
+            ))}
+          </g>
+        ))}
+
+        {/* the red block being carried — picked, arced right, dropped */}
         <motion.g
-          initial={{ opacity: 0, x: 10 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5, delay: 1.2 }}
+          animate={{
+            x: [0, 0, 0, 110, 110, 110, 0],
+            y: [0, 0, -52, -52, -4, 4, 0],
+            opacity: [0, 1, 1, 1, 1, 0, 0],
+          }}
+          transition={{ duration: CYCLE, times: T, repeat: Infinity, ease: "easeInOut" }}
         >
-          {/* Base */}
-          <rect x="252" y="138" width="40" height="14" fill="#FFD60A" stroke="#0A0A0A" strokeWidth="2" />
-          <rect x="260" y="128" width="24" height="10" fill="#0A0A0A" />
-          {/* Joint 1 */}
-          <circle cx="272" cy="128" r="4" fill="#FF4D6D" stroke="#0A0A0A" strokeWidth="2" />
-          {/* Animated arm segments — slight oscillation */}
-          <motion.g
-            animate={{ rotate: [0, -8, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            style={{ transformOrigin: "272px 128px" }}
-          >
-            <line x1="272" y1="128" x2="272" y2="92" stroke="#0A0A0A" strokeWidth="4" strokeLinecap="round" />
-            <circle cx="272" cy="92" r="4" fill="#FF4D6D" stroke="#0A0A0A" strokeWidth="2" />
-            <motion.g
-              animate={{ rotate: [0, 14, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              style={{ transformOrigin: "272px 92px" }}
-            >
-              <line x1="272" y1="92" x2="296" y2="74" stroke="#0A0A0A" strokeWidth="4" strokeLinecap="round" />
-              {/* Gripper */}
-              <g transform="translate(296,74)">
-                <line x1="0" y1="0" x2="0" y2="-6" stroke="#0A0A0A" strokeWidth="2" />
-                <line x1="-4" y1="-6" x2="4" y2="-6" stroke="#0A0A0A" strokeWidth="2.5" />
-                <line x1="-4" y1="-6" x2="-4" y2="-2" stroke="#0A0A0A" strokeWidth="2.5" />
-                <line x1="4" y1="-6" x2="4" y2="-2" stroke="#0A0A0A" strokeWidth="2.5" />
-              </g>
-            </motion.g>
-          </motion.g>
+          <rect x="90" y="128" width="10" height="10" fill="#FF4D6D" stroke="#0A0A0A" strokeWidth="1.8" />
+        </motion.g>
 
-          {/* Target cube (red) under the gripper */}
+        {/* landing tick over the red bucket */}
+        <motion.text
+          x="206" y="120" textAnchor="middle" fill="#0A0A0A"
+          style={{ font: "bold 13px 'JetBrains Mono', monospace" }}
+          animate={{ opacity: [0, 0, 0, 0, 0, 1, 0], y: [120, 120, 120, 120, 120, 112, 108] }}
+          transition={{ duration: CYCLE, times: T, repeat: Infinity }}
+        >
+          ✓
+        </motion.text>
+
+        {/* === the arm — swings between pile and buckets === */}
+        {/* base */}
+        <rect x="140" y="138" width="40" height="12" fill="#FFD60A" stroke="#0A0A0A" strokeWidth="2" />
+        <rect x="150" y="128" width="20" height="10" fill="#0A0A0A" />
+        <circle cx="160" cy="128" r="4.5" fill="#FF4D6D" stroke="#0A0A0A" strokeWidth="2" />
+
+        {/* shoulder sweep */}
+        <motion.g
+          animate={{ rotate: [-38, -38, -38, 26, 26, 26, -38] }}
+          transition={{ duration: CYCLE, times: T, repeat: Infinity, ease: "easeInOut" }}
+          style={{ transformOrigin: "160px 128px" }}
+        >
+          <line x1="160" y1="128" x2="160" y2="86" stroke="#0A0A0A" strokeWidth="5" strokeLinecap="round" />
+          <circle cx="160" cy="86" r="4.5" fill="#FF4D6D" stroke="#0A0A0A" strokeWidth="2" />
+
+          {/* elbow dip */}
           <motion.g
-            initial={{ y: 6, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.4, delay: 1.5 }}
+            animate={{ rotate: [-6, -30, -12, 10, 34, 34, -6] }}
+            transition={{ duration: CYCLE, times: T, repeat: Infinity, ease: "easeInOut" }}
+            style={{ transformOrigin: "160px 86px" }}
           >
-            <rect x="236" y="138" width="14" height="14" fill="#FF4D6D" stroke="#0A0A0A" strokeWidth="2" />
+            <line x1="160" y1="86" x2="160" y2="52" stroke="#0A0A0A" strokeWidth="4" strokeLinecap="round" />
+            {/* gripper */}
+            <g transform="translate(160,52)">
+              <line x1="-6" y1="0" x2="6" y2="0" stroke="#0A0A0A" strokeWidth="3" />
+              <motion.line
+                x1="-6" y1="0" x2="-6" y2="8" stroke="#0A0A0A" strokeWidth="3" strokeLinecap="round"
+                animate={{ x1: [-6, -4, -4, -4, -4, -6, -6], x2: [-6, -4, -4, -4, -4, -6, -6] }}
+                transition={{ duration: CYCLE, times: T, repeat: Infinity }}
+              />
+              <motion.line
+                x1="6" y1="0" x2="6" y2="8" stroke="#0A0A0A" strokeWidth="3" strokeLinecap="round"
+                animate={{ x1: [6, 4, 4, 4, 4, 6, 6], x2: [6, 4, 4, 4, 4, 6, 6] }}
+                transition={{ duration: CYCLE, times: T, repeat: Infinity }}
+              />
+            </g>
           </motion.g>
         </motion.g>
       </svg>
 
-      {/* Stage 1: voice bubble (top-left) */}
+      {/* one voice chip — the only words on screen */}
       <motion.div
         initial={{ opacity: 0, x: -10 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.4, delay: 0.2 }}
-        className="absolute top-3 left-3 inline-flex flex-col gap-1"
+        transition={{ duration: 0.4, delay: 0.3 }}
+        className="absolute top-2 left-2 inline-flex items-center gap-1.5 font-mono text-[0.55rem] md:text-[0.65rem] font-bold bg-pink text-white px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]"
       >
-        <span className="inline-flex items-center gap-1.5 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-pink text-white px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
-          <span className="flex items-end gap-[2px] h-3">
-            {[3, 7, 4, 9, 3].map((h, i) => (
-              <motion.span
-                key={i}
-                className="block w-[2px] bg-white"
-                animate={{ height: [`${h}px`, `${h + 4}px`, `${h}px`] }}
-                transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.08 }}
-              />
-            ))}
-          </span>
-          Voice
+        <span className="flex items-end gap-[2px] h-3">
+          {[3, 7, 4, 9, 3].map((h, i) => (
+            <motion.span
+              key={i}
+              className="block w-[2px] bg-white"
+              animate={{ height: [`${h}px`, `${h + 4}px`, `${h}px`] }}
+              transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.08 }}
+            />
+          ))}
         </span>
-        <span className="font-mono text-[0.55rem] md:text-[0.65rem] font-bold bg-white text-black px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
-          “pick the red cube”
-        </span>
+        “sort everything…”
       </motion.div>
 
-      {/* Stage 2: LLM task plan (middle) */}
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.4, delay: 0.8 }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex flex-col gap-1 items-center"
-      >
-        <span className="font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-yellow text-black px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
-          LLM · Plan
-        </span>
-        <div className="font-mono text-[0.5rem] md:text-[0.6rem] leading-tight bg-black text-white px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#0A0A0A] text-left max-w-[110px]">
-          1. pick(red)<br/>
-          2. place(bucket)<br/>
-          3. verify ✓
-        </div>
-        <motion.span
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.4, delay: 1.8 }}
-          className="font-mono text-[0.45rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-white text-black px-1.5 py-0.5 border-2 border-black"
-        >
-          re-plans until done
-        </motion.span>
-      </motion.div>
-
-      {/* Live indicator */}
+      {/* live badge */}
       <div className="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-black text-yellow px-1.5 py-0.5 border-2 border-yellow">
         <motion.span
           className="inline-block h-1 w-1 rounded-full bg-yellow"
@@ -1081,11 +1066,6 @@ function RoboticArmArtifact({ size = "card" }: { size?: "card" | "modal" }) {
           transition={{ duration: 1, repeat: Infinity }}
         />
         PyBullet · Live
-      </div>
-
-      {/* Pipeline label bottom-left */}
-      <div className="absolute bottom-2 left-2 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-white text-black px-1.5 py-0.5 border-2 border-black">
-        Whisper → LLM → PyBullet
       </div>
     </div>
   );
