@@ -931,113 +931,73 @@ function FireSmokeArtifact({ size = "card" }: { size?: "card" | "modal" }) {
 
 function RoboticArmArtifact({ size = "card" }: { size?: "card" | "modal" }) {
   const isModal = size === "modal";
-  /* No diagram — just the robot at work: an endless pick → carry → drop loop
-     from a jumbled pile into four colour buckets. */
-  const CYCLE = 5.5;
-  const T = [0, 0.12, 0.2, 0.55, 0.68, 0.8, 1];
+  const D = 6;
+  const TIMES = [0, 0.1, 0.22, 0.3, 0.4, 0.55, 0.66, 0.72, 0.8, 1];
+  const tr = { duration: D, times: TIMES, repeat: Infinity, ease: "easeInOut" as const };
+  const cx = [150, 88, 88, 88, 88, 206, 206, 206, 206, 150];
+  const gy = [58, 58, 132, 132, 58, 58, 122, 122, 58, 58];
+  const op = [6, 6, 6, 3.4, 3.4, 3.4, 3.4, 6, 6, 6];
+  const bx = [90, 88, 88, 88, 88, 206, 206, 206, 206, 90];
+  const by = [140, 140, 126, 126, 70, 70, 116, 128, 128, 140];
+  const bo = [0, 1, 1, 1, 1, 1, 1, 1, 0, 0];
+
   return (
     <div className={`relative w-full ${isModal ? "aspect-[21/9]" : "aspect-[16/9]"} bg-bg border-b-3 border-black overflow-hidden`}>
-      {/* Subtle grid backdrop, same as chess */}
       <div className="absolute inset-0 opacity-30" style={{
         backgroundImage: "linear-gradient(#0A0A0A14 1px, transparent 1px), linear-gradient(90deg, #0A0A0A14 1px, transparent 1px)",
         backgroundSize: "16px 16px",
       }} />
-
-      <svg
-        viewBox="0 0 320 180"
-        preserveAspectRatio="xMidYMid slice"
-        className="absolute inset-0 h-full w-full"
-        aria-hidden
-      >
-        {/* work table */}
-        <line x1="20" y1="150" x2="300" y2="150" stroke="#0A0A0A" strokeWidth="3" />
-
-        {/* the unsorted pile (left) */}
+      <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full" aria-hidden>
+        <g stroke="#0A0A0A" strokeWidth="4" strokeLinecap="square">
+          <line x1="34" y1="34" x2="34" y2="150" />
+          <line x1="300" y1="34" x2="300" y2="150" />
+          <line x1="32" y1="34" x2="302" y2="34" />
+        </g>
+        <line x1="24" y1="150" x2="300" y2="150" stroke="#0A0A0A" strokeWidth="3" />
         <g stroke="#0A0A0A" strokeWidth="1.8">
           <rect x="66" y="140" width="10" height="10" fill="#4361EE" />
           <rect x="78" y="140" width="10" height="10" fill="#FFD60A" />
-          <rect x="90" y="140" width="10" height="10" fill="#FF4D6D" />
-          <rect x="102" y="140" width="10" height="10" fill="#2FBF71" />
+          <rect x="90" y="140" width="10" height="10" fill="#2FBF71" />
           <rect x="72" y="130" width="10" height="10" fill="#FF4D6D" transform="rotate(-8 77 135)" />
-          <rect x="86" y="130" width="10" height="10" fill="#4361EE" transform="rotate(6 91 135)" />
-          <rect x="96" y="120" width="10" height="10" fill="#FFD60A" transform="rotate(-12 101 125)" />
+          <rect x="86" y="130" width="10" height="10" fill="#4361EE" transform="rotate(7 91 135)" />
+          <rect x="80" y="121" width="10" height="10" fill="#FFD60A" transform="rotate(-4 85 126)" />
         </g>
-
-        {/* four colour buckets (right) with what's already sorted */}
-        {([
-          ["#FF4D6D", 196, 1], ["#4361EE", 223, 2], ["#FFD60A", 250, 1], ["#2FBF71", 277, 0],
-        ] as [string, number, number][]).map(([c, x, n]) => (
+        {([["#FF4D6D", 196, 1], ["#4361EE", 223, 2], ["#FFD60A", 250, 1], ["#2FBF71", 277, 0]] as [string, number, number][]).map(([c, x, n]) => (
           <g key={x}>
-            <path d={`M${x},132 v16 h20 v-16`} fill={`${c}40`} stroke="#0A0A0A" strokeWidth="2" />
+            <path d={`M${x},132 v16 h20 v-16`} fill={`${c}33`} stroke="#0A0A0A" strokeWidth="2" />
             {Array.from({ length: n }).map((_, i) => (
               <rect key={i} x={x + 5.5} y={139 - i * 9} width="9" height="9" fill={c} stroke="#0A0A0A" strokeWidth="1.5" />
             ))}
           </g>
         ))}
-
-        {/* the red block being carried — picked, arced right, dropped */}
-        <motion.g
-          animate={{
-            x: [0, 0, 0, 110, 110, 110, 0],
-            y: [0, 0, -52, -52, -4, 4, 0],
-            opacity: [0, 1, 1, 1, 1, 0, 0],
-          }}
-          transition={{ duration: CYCLE, times: T, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <rect x="90" y="128" width="10" height="10" fill="#FF4D6D" stroke="#0A0A0A" strokeWidth="1.8" />
-        </motion.g>
-
-        {/* landing tick over the red bucket */}
+        <motion.rect
+          width="10" height="10" fill="#FF4D6D" stroke="#0A0A0A" strokeWidth="1.8"
+          animate={{ x: bx.map((v) => v - 5), y: by.map((v) => v - 5), opacity: bo }}
+          transition={tr}
+        />
         <motion.text
-          x="206" y="120" textAnchor="middle" fill="#0A0A0A"
-          style={{ font: "bold 13px 'JetBrains Mono', monospace" }}
-          animate={{ opacity: [0, 0, 0, 0, 0, 1, 0], y: [120, 120, 120, 120, 120, 112, 108] }}
-          transition={{ duration: CYCLE, times: T, repeat: Infinity }}
+          x="206" y="118" textAnchor="middle" fill="#0A0A0A"
+          style={{ font: "bold 12px 'JetBrains Mono', monospace" }}
+          animate={{ opacity: [0, 0, 0, 0, 0, 0, 0, 1, 0, 0], y: [118, 118, 118, 118, 118, 118, 118, 110, 106, 106] }}
+          transition={tr}
         >
           ✓
         </motion.text>
-
-        {/* === the arm — swings between pile and buckets === */}
-        {/* base */}
-        <rect x="140" y="138" width="40" height="12" fill="#FFD60A" stroke="#0A0A0A" strokeWidth="2" />
-        <rect x="150" y="128" width="20" height="10" fill="#0A0A0A" />
-        <circle cx="160" cy="128" r="4.5" fill="#FF4D6D" stroke="#0A0A0A" strokeWidth="2" />
-
-        {/* shoulder sweep */}
-        <motion.g
-          animate={{ rotate: [-38, -38, -38, 26, 26, 26, -38] }}
-          transition={{ duration: CYCLE, times: T, repeat: Infinity, ease: "easeInOut" }}
-          style={{ transformOrigin: "160px 128px" }}
-        >
-          <line x1="160" y1="128" x2="160" y2="86" stroke="#0A0A0A" strokeWidth="5" strokeLinecap="round" />
-          <circle cx="160" cy="86" r="4.5" fill="#FF4D6D" stroke="#0A0A0A" strokeWidth="2" />
-
-          {/* elbow dip */}
-          <motion.g
-            animate={{ rotate: [-6, -30, -12, 10, 34, 34, -6] }}
-            transition={{ duration: CYCLE, times: T, repeat: Infinity, ease: "easeInOut" }}
-            style={{ transformOrigin: "160px 86px" }}
-          >
-            <line x1="160" y1="86" x2="160" y2="52" stroke="#0A0A0A" strokeWidth="4" strokeLinecap="round" />
-            {/* gripper */}
-            <g transform="translate(160,52)">
-              <line x1="-6" y1="0" x2="6" y2="0" stroke="#0A0A0A" strokeWidth="3" />
-              <motion.line
-                x1="-6" y1="0" x2="-6" y2="8" stroke="#0A0A0A" strokeWidth="3" strokeLinecap="round"
-                animate={{ x1: [-6, -4, -4, -4, -4, -6, -6], x2: [-6, -4, -4, -4, -4, -6, -6] }}
-                transition={{ duration: CYCLE, times: T, repeat: Infinity }}
-              />
-              <motion.line
-                x1="6" y1="0" x2="6" y2="8" stroke="#0A0A0A" strokeWidth="3" strokeLinecap="round"
-                animate={{ x1: [6, 4, 4, 4, 4, 6, 6], x2: [6, 4, 4, 4, 4, 6, 6] }}
-                transition={{ duration: CYCLE, times: T, repeat: Infinity }}
-              />
-            </g>
+        <motion.g animate={{ x: cx }} transition={tr}>
+          <rect x="-11" y="27" width="22" height="12" fill="#FFD60A" stroke="#0A0A0A" strokeWidth="2.5" />
+          <circle cx="-6" cy="33" r="2.4" fill="#0A0A0A" />
+          <circle cx="6" cy="33" r="2.4" fill="#0A0A0A" />
+          <motion.line x1="0" x2="0" y1="39" stroke="#0A0A0A" strokeWidth="4"
+            animate={{ y2: gy }} transition={tr} />
+          <motion.g animate={{ y: gy }} transition={tr}>
+            <rect x="-8" y="-3" width="16" height="6" fill="#0A0A0A" />
+            <motion.line y1="3" y2="12" stroke="#0A0A0A" strokeWidth="3" strokeLinecap="round"
+              animate={{ x1: op.map((v) => -v), x2: op.map((v) => -v) }} transition={tr} />
+            <motion.line y1="3" y2="12" stroke="#0A0A0A" strokeWidth="3" strokeLinecap="round"
+              animate={{ x1: op, x2: op }} transition={tr} />
           </motion.g>
         </motion.g>
       </svg>
-
-      {/* one voice chip — the only words on screen */}
       <motion.div
         initial={{ opacity: 0, x: -10 }}
         whileInView={{ opacity: 1, x: 0 }}
@@ -1047,24 +1007,16 @@ function RoboticArmArtifact({ size = "card" }: { size?: "card" | "modal" }) {
       >
         <span className="flex items-end gap-[2px] h-3">
           {[3, 7, 4, 9, 3].map((h, i) => (
-            <motion.span
-              key={i}
-              className="block w-[2px] bg-white"
+            <motion.span key={i} className="block w-[2px] bg-white"
               animate={{ height: [`${h}px`, `${h + 4}px`, `${h}px`] }}
-              transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.08 }}
-            />
+              transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.08 }} />
           ))}
         </span>
         “sort everything…”
       </motion.div>
-
-      {/* live badge */}
       <div className="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-black text-yellow px-1.5 py-0.5 border-2 border-yellow">
-        <motion.span
-          className="inline-block h-1 w-1 rounded-full bg-yellow"
-          animate={{ opacity: [1, 0.2, 1] }}
-          transition={{ duration: 1, repeat: Infinity }}
-        />
+        <motion.span className="inline-block h-1 w-1 rounded-full bg-yellow"
+          animate={{ opacity: [1, 0.2, 1] }} transition={{ duration: 1, repeat: Infinity }} />
         PyBullet · Live
       </div>
     </div>
