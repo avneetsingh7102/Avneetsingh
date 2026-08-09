@@ -66,7 +66,7 @@ const NAV_LINKS = [
 ];
 
 type PersonalProject = {
-  slug: "defect" | "chess" | "fire" | "robot";
+  slug: "sixthsense" | "defect" | "chess" | "fire" | "robot";
   status: "deployed" | "wip";
   color: string;
   accent: string;
@@ -85,6 +85,36 @@ type PersonalProject = {
 };
 
 const PERSONAL_PROJECTS: PersonalProject[] = [
+  {
+    slug: "sixthsense",
+    status: "deployed",
+    color: "bg-blue",
+    accent: "text-blue",
+    emoji: "👁️",
+    title: "SixthSense Telemetry AI",
+    tagline: "Multimodal privacy-conscious telemetry & LLM activity recapper",
+    description:
+      "On-device perception system combining YOLOv8 (ByteTrack), MediaPipe 33-pose landmarking, Depth Anything V2, AST audio classification, and Groq Llama 3.3 for privacy-conscious temporal telemetry.",
+    longDescription:
+      "A privacy-first, on-device multimodal telemetry engine designed to measure focus and work sessions without cloud streaming or intrusive video recording. SixthSense integrates YOLOv8 with ByteTrack for persistent multi-object tracking, MediaPipe for 33-keypoint pose estimation, Depth Anything V2 for relative monocular depth estimation, and Hugging Face AST for ambient sound event classification. Raw observations pass through a rule-based state machine and temporal state smoothing window (sliding-window majority vote) to segment work sessions and filter transient noise. Dual-write telemetry is stored in SQLite (sixthsense.db) and JSONL (log.jsonl). A Groq Llama 3.3 70B layer synthesizes structured event logs into concise natural language executive recaps.",
+    techStack: [
+      { category: "Vision & Depth", items: ["YOLOv8", "ByteTrack", "MediaPipe Pose", "Depth Anything V2", "OpenCV"] },
+      { category: "Audio AI", items: ["sounddevice", "soundfile", "HuggingFace AST Transformer"] },
+      { category: "LLM & Telemetry", items: ["Groq (Llama 3.3 70B)", "SQLite", "JSONL", "State Smoothing"] },
+      { category: "Deploy & Web", items: ["Python", "Hugging Face Spaces (WebAssembly/CDN)", "GitHub"] },
+    ],
+    highlights: [
+      "On-device multi-modal perception: YOLOv8 + MediaPipe Pose + AST Audio + Monocular Depth",
+      "Temporal state smoothing via sliding-window majority voting to eliminate 1-frame flickering",
+      "Dual-write local telemetry storage engine in SQLite + JSONL for zero-latency queries",
+      "Privacy-first periodic sampling (1–15 min intervals) — no continuous cloud video streaming",
+      "Groq Llama 3.3 LLM recapper transforming spatial-temporal logs into markdown reports",
+      "Deployed interactive live demo on Hugging Face Spaces & open-source on GitHub",
+    ],
+    githubUrl: "https://github.com/avneetsingh7102/SixthSense",
+    liveUrl: "https://huggingface.co/spaces/avneetssing/SixthSense-Web",
+    liveLabel: "Hugging Face Spaces",
+  },
   {
     slug: "defect",
     status: "deployed",
@@ -1023,7 +1053,124 @@ function RoboticArmArtifact({ size = "card" }: { size?: "card" | "modal" }) {
   );
 }
 
+function SixthSenseArtifact({ size = "card" }: { size?: "card" | "modal" }) {
+  const isModal = size === "modal";
+  return (
+    <div className={`relative w-full ${isModal ? "aspect-[21/9]" : "aspect-[16/9]"} bg-black border-b-3 border-black overflow-hidden`}>
+      <svg
+        viewBox="0 0 320 180"
+        preserveAspectRatio="xMidYMid slice"
+        className="absolute inset-0 h-full w-full"
+        aria-hidden
+      >
+        <defs>
+          <pattern id="sixthsense-grid" patternUnits="userSpaceOnUse" width="16" height="16">
+            <path d="M 16 0 L 0 0 0 16" fill="none" stroke="#1f2937" strokeWidth="0.8" />
+          </pattern>
+          <linearGradient id="depth-scan-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.0" />
+            <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
+          </linearGradient>
+        </defs>
+
+        <rect width="320" height="180" fill="#090d16" />
+        <rect width="320" height="180" fill="url(#sixthsense-grid)" opacity="0.6" />
+
+        {/* Monocular Depth Sweep Line */}
+        <motion.rect
+          x="0" y="0" width="320" height="45"
+          fill="url(#depth-scan-grad)"
+          animate={{ y: [0, 135, 0] }}
+          transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* MediaPipe Pose Skeleton (Seated Person) */}
+        <circle cx="160" cy="46" r="10" fill="none" stroke="#10b981" strokeWidth="2" />
+        <circle cx="160" cy="46" r="3" fill="#10b981" />
+
+        {/* Shoulders & Torso */}
+        <line x1="125" y1="72" x2="195" y2="72" stroke="#10b981" strokeWidth="2.5" />
+        <line x1="125" y1="72" x2="140" y2="135" stroke="#10b981" strokeWidth="2" />
+        <line x1="195" y1="72" x2="180" y2="135" stroke="#10b981" strokeWidth="2" />
+        <line x1="140" y1="135" x2="180" y2="135" stroke="#10b981" strokeWidth="2" />
+
+        {/* Arms to Wrists */}
+        <line x1="125" y1="72" x2="102" y2="108" stroke="#10b981" strokeWidth="2" />
+        <line x1="102" y1="108" x2="115" y2="128" stroke="#10b981" strokeWidth="2" />
+        <line x1="195" y1="72" x2="218" y2="108" stroke="#10b981" strokeWidth="2" />
+        <line x1="218" y1="108" x2="205" y2="128" stroke="#10b981" strokeWidth="2" />
+
+        {/* Keypoint Dots */}
+        {[
+          [125, 72], [195, 72], [102, 108], [218, 108], [140, 135], [180, 135]
+        ].map(([kx, ky], idx) => (
+          <circle key={idx} cx={kx} cy={ky} r="3" fill="#ec4899" />
+        ))}
+
+        {/* Wrist Keypoint Dots (Glowing Yellow) */}
+        <circle cx="115" cy="128" r="5" fill="#FFD60A" stroke="#ffffff" strokeWidth="1.5" />
+        <circle cx="205" cy="128" r="5" fill="#FFD60A" stroke="#ffffff" strokeWidth="1.5" />
+
+        {/* YOLOv8 Object Detection Bounding Box: Laptop */}
+        <motion.g
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+        >
+          <rect x="90" y="118" width="140" height="42" fill="rgba(16,185,129,0.12)" stroke="#10b981" strokeWidth="2" rx="4" />
+          <text x="96" y="132" fill="#10b981" style={{ font: "bold 9px 'JetBrains Mono', monospace" }}>laptop 96%</text>
+        </motion.g>
+
+        {/* YOLOv8 Object Detection Bounding Box: Cell Phone */}
+        <motion.g
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.4, delay: 0.4 }}
+        >
+          <rect x="245" y="110" width="35" height="48" fill="rgba(6,182,212,0.12)" stroke="#06b6d4" strokeWidth="1.8" rx="3" />
+          <text x="248" y="122" fill="#06b6d4" style={{ font: "bold 8px 'JetBrains Mono', monospace" }}>phone</text>
+        </motion.g>
+
+        {/* Wrist-to-Laptop Tether Line */}
+        <motion.line
+          x1="115" y1="128" x2="160" y2="139"
+          stroke="#FFD60A" strokeWidth="2" strokeDasharray="3 3"
+          animate={{ opacity: [1, 0.4, 1] }}
+          transition={{ duration: 1.2, repeat: Infinity }}
+        />
+        <circle cx="160" cy="139" r="4" fill="#FFD60A" />
+      </svg>
+
+      {/* HUD Badges Overlay */}
+      <div className="absolute top-2 left-2 inline-flex items-center gap-1.5 font-mono text-[0.55rem] md:text-[0.65rem] font-bold tracking-widest uppercase bg-emerald-600 text-white px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        <motion.span
+          className="inline-block h-2 w-2 rounded-full bg-white"
+          animate={{ opacity: [1, 0.2, 1] }}
+          transition={{ duration: 1, repeat: Infinity }}
+        />
+        STATUS: WORKING
+      </div>
+
+      <div className="absolute top-2 right-2 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-blue text-white px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        YOLOv8 + ByteTrack
+      </div>
+
+      <div className="absolute bottom-2 left-2 hidden sm:inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-black text-white px-1.5 py-0.5 border-2 border-emerald-500">
+        AST Audio: Typing (88%)
+      </div>
+
+      <div className="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-yellow text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        Groq Llama 3.3 · 60 FPS
+      </div>
+    </div>
+  );
+}
+
 function ProjectArtifact({ slug, size }: { slug: PersonalProject["slug"]; size?: "card" | "modal" }) {
+  if (slug === "sixthsense") return <SixthSenseArtifact size={size} />;
   if (slug === "defect") return <DefectArtifact size={size} />;
   if (slug === "chess") return <ChessArtifact size={size} />;
   if (slug === "fire") return <FireSmokeArtifact size={size} />;
