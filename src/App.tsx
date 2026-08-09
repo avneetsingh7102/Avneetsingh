@@ -1069,7 +1069,7 @@ function SixthSenseArtifact({ size = "card" }: { size?: "card" | "modal" }) {
           </pattern>
           <linearGradient id="depth-scan-grad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.0" />
-            <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.25" />
+            <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.3" />
             <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
           </linearGradient>
         </defs>
@@ -1077,49 +1077,104 @@ function SixthSenseArtifact({ size = "card" }: { size?: "card" | "modal" }) {
         <rect width="320" height="180" fill="#090d16" />
         <rect width="320" height="180" fill="url(#sixthsense-grid)" opacity="0.6" />
 
-        {/* Monocular Depth Sweep Line */}
+        {/* Monocular Depth Sweep Gradient */}
         <motion.rect
           x="0" y="0" width="320" height="45"
           fill="url(#depth-scan-grad)"
           animate={{ y: [0, 135, 0] }}
-          transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        {/* MediaPipe Pose Skeleton (Seated Person) */}
-        <circle cx="160" cy="46" r="10" fill="none" stroke="#10b981" strokeWidth="2" />
-        <circle cx="160" cy="46" r="3" fill="#10b981" />
+        {/* Active Laser Scanning Line */}
+        <motion.line
+          x1="0" y1="0" x2="320" y2="0"
+          stroke="#10b981" strokeWidth="1.5" opacity="0.75"
+          animate={{ y1: [0, 180, 0], y2: [0, 180, 0] }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+        />
 
-        {/* Shoulders & Torso */}
-        <line x1="125" y1="72" x2="195" y2="72" stroke="#10b981" strokeWidth="2.5" />
-        <line x1="125" y1="72" x2="140" y2="135" stroke="#10b981" strokeWidth="2" />
-        <line x1="195" y1="72" x2="180" y2="135" stroke="#10b981" strokeWidth="2" />
-        <line x1="140" y1="135" x2="180" y2="135" stroke="#10b981" strokeWidth="2" />
+        {/* MediaPipe Pose Skeleton with Breathing Motion */}
+        <motion.g
+          animate={{ y: [0, -3, 0] }}
+          transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          {/* Head & Nose */}
+          <circle cx="160" cy="46" r="10" fill="none" stroke="#10b981" strokeWidth="2" />
+          <circle cx="160" cy="46" r="3" fill="#10b981" />
 
-        {/* Arms to Wrists */}
-        <line x1="125" y1="72" x2="102" y2="108" stroke="#10b981" strokeWidth="2" />
-        <line x1="102" y1="108" x2="115" y2="128" stroke="#10b981" strokeWidth="2" />
-        <line x1="195" y1="72" x2="218" y2="108" stroke="#10b981" strokeWidth="2" />
-        <line x1="218" y1="108" x2="205" y2="128" stroke="#10b981" strokeWidth="2" />
+          {/* Shoulders & Torso */}
+          <line x1="125" y1="72" x2="195" y2="72" stroke="#10b981" strokeWidth="2.5" />
+          <line x1="125" y1="72" x2="140" y2="135" stroke="#10b981" strokeWidth="2" />
+          <line x1="195" y1="72" x2="180" y2="135" stroke="#10b981" strokeWidth="2" />
+          <line x1="140" y1="135" x2="180" y2="135" stroke="#10b981" strokeWidth="2" />
 
-        {/* Keypoint Dots */}
-        {[
-          [125, 72], [195, 72], [102, 108], [218, 108], [140, 135], [180, 135]
-        ].map(([kx, ky], idx) => (
-          <circle key={idx} cx={kx} cy={ky} r="3" fill="#ec4899" />
-        ))}
+          {/* Upper Arms */}
+          <line x1="125" y1="72" x2="102" y2="108" stroke="#10b981" strokeWidth="2" />
+          <line x1="195" y1="72" x2="218" y2="108" stroke="#10b981" strokeWidth="2" />
 
-        {/* Wrist Keypoint Dots (Glowing Yellow) */}
-        <circle cx="115" cy="128" r="5" fill="#FFD60A" stroke="#ffffff" strokeWidth="1.5" />
-        <circle cx="205" cy="128" r="5" fill="#FFD60A" stroke="#ffffff" strokeWidth="1.5" />
+          {/* Keypoint Dots */}
+          {[
+            [125, 72], [195, 72], [102, 108], [218, 108], [140, 135], [180, 135]
+          ].map(([kx, ky], idx) => (
+            <circle key={idx} cx={kx} cy={ky} r="3" fill="#ec4899" />
+          ))}
+        </motion.g>
 
-        {/* YOLOv8 Object Detection Bounding Box: Laptop */}
+        {/* Dynamic Typing Wrists & Forearms */}
+        <motion.g>
+          {/* Left Forearm & Wrist (Moving in typing rhythm) */}
+          <motion.line
+            x1="102" y1="108"
+            animate={{ x2: [115, 118, 112, 117, 115], y2: [128, 124, 130, 125, 128] }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+            stroke="#10b981" strokeWidth="2"
+          />
+          <motion.circle
+            r="5" fill="#FFD60A" stroke="#ffffff" strokeWidth="1.5"
+            animate={{ cx: [115, 118, 112, 117, 115], cy: [128, 124, 130, 125, 128] }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+          />
+
+          {/* Right Forearm & Wrist (Moving in typing rhythm) */}
+          <motion.line
+            x1="218" y1="108"
+            animate={{ x2: [205, 202, 208, 203, 205], y2: [128, 125, 129, 124, 128] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+            stroke="#10b981" strokeWidth="2"
+          />
+          <motion.circle
+            r="5" fill="#FFD60A" stroke="#ffffff" strokeWidth="1.5"
+            animate={{ cx: [205, 202, 208, 203, 205], cy: [128, 125, 129, 124, 128] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          />
+
+          {/* Wrist-to-Laptop Dynamic Tether Line */}
+          <motion.line
+            y1="128" x2="160" y2="139"
+            stroke="#FFD60A" strokeWidth="2" strokeDasharray="3 3"
+            animate={{
+              x1: [115, 118, 112, 117, 115],
+              opacity: [1, 0.4, 1],
+              strokeWidth: [1.8, 2.6, 1.8]
+            }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <circle cx="160" cy="139" r="4" fill="#FFD60A" />
+        </motion.g>
+
+        {/* YOLOv8 Object Detection Bounding Box: Laptop (Pulsating) */}
         <motion.g
           initial={{ opacity: 0, scale: 0.8 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <rect x="90" y="118" width="140" height="42" fill="rgba(16,185,129,0.12)" stroke="#10b981" strokeWidth="2" rx="4" />
+          <motion.rect
+            x="90" y="118" width="140" height="42"
+            fill="rgba(16,185,129,0.12)" stroke="#10b981" rx="4"
+            animate={{ strokeWidth: [2, 2.8, 2], opacity: [0.85, 1, 0.85] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
           <text x="96" y="132" fill="#10b981" style={{ font: "bold 9px 'JetBrains Mono', monospace" }}>laptop 96%</text>
         </motion.g>
 
@@ -1130,18 +1185,14 @@ function SixthSenseArtifact({ size = "card" }: { size?: "card" | "modal" }) {
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.4, delay: 0.4 }}
         >
-          <rect x="245" y="110" width="35" height="48" fill="rgba(6,182,212,0.12)" stroke="#06b6d4" strokeWidth="1.8" rx="3" />
+          <motion.rect
+            x="245" y="110" width="35" height="48"
+            fill="rgba(6,182,212,0.12)" stroke="#06b6d4" rx="3"
+            animate={{ strokeWidth: [1.8, 2.5, 1.8], opacity: [0.75, 1, 0.75] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+          />
           <text x="248" y="122" fill="#06b6d4" style={{ font: "bold 8px 'JetBrains Mono', monospace" }}>phone</text>
         </motion.g>
-
-        {/* Wrist-to-Laptop Tether Line */}
-        <motion.line
-          x1="115" y1="128" x2="160" y2="139"
-          stroke="#FFD60A" strokeWidth="2" strokeDasharray="3 3"
-          animate={{ opacity: [1, 0.4, 1] }}
-          transition={{ duration: 1.2, repeat: Infinity }}
-        />
-        <circle cx="160" cy="139" r="4" fill="#FFD60A" />
       </svg>
 
       {/* HUD Badges Overlay */}
@@ -1158,7 +1209,18 @@ function SixthSenseArtifact({ size = "card" }: { size?: "card" | "modal" }) {
         YOLOv8 + ByteTrack
       </div>
 
-      <div className="absolute bottom-2 left-2 hidden sm:inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-black text-white px-1.5 py-0.5 border-2 border-emerald-500">
+      {/* Live Audio Equalizer Waveform Badge */}
+      <div className="absolute bottom-2 left-2 hidden sm:inline-flex items-center gap-1.5 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-black text-white px-2 py-1 border-2 border-emerald-500">
+        <span className="flex items-end gap-[2px] h-3">
+          {[4, 10, 6, 12, 5].map((h, i) => (
+            <motion.span
+              key={i}
+              className="block w-[2px] bg-emerald-400"
+              animate={{ height: [`${h}px`, `${h + 5}px`, `${h}px`] }}
+              transition={{ duration: 0.7, repeat: Infinity, delay: i * 0.1 }}
+            />
+          ))}
+        </span>
         AST Audio: Typing (88%)
       </div>
 
@@ -1476,7 +1538,7 @@ function PersonalProjectCard({
 
       <div className="flex-1 flex flex-col">
         {/* Visual artifact — full-bleed at the top of card content */}
-        <ProjectArtifact slug={project.slug} />
+        <ProjectArtifact slug={project.slug} size={project.slug === "sixthsense" ? "modal" : "card"} />
 
         <div className="p-6 md:p-8">
         {/* Live / WIP badge + emoji row */}
