@@ -1254,7 +1254,7 @@ function SixthSenseArtifact({ size = "card" }: { size?: "card" | "modal" }) {
         AST Audio: Typing (88%)
       </div>
 
-      <div class="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-yellow text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+      <div className="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-yellow text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
         Groq Llama 3.3 · 60 FPS
       </div>
     </div>
