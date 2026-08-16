@@ -80,6 +80,7 @@ type PersonalProject = {
   githubUrl?: string;
   liveUrl?: string;
   liveLabel?: string;
+  colabUrl?: string;
   videoUrl?: string;
   posterUrl?: string;
 };
@@ -131,10 +132,11 @@ const PERSONAL_PROJECTS: PersonalProject[] = [
       { category: "Computer Vision", items: ["ResNet-50", "PyTorch", "OpenCV", "CIFAR-100"] },
       { category: "Acceleration Engine", items: ["Apple Metal MPS", "NVIDIA CUDA", "CPU Fallback"] },
       { category: "Web & API", items: ["FastAPI", "Uvicorn", "Drag-and-Drop Studio", "Pillow"] },
-      { category: "Deploy & Showcase", items: ["Python CLI", "Hugging Face Spaces", "GitHub"] },
+      { category: "Deploy & Showcase", items: ["Python CLI", "Hugging Face Spaces", "GitHub", "Google Colab"] },
     ],
     highlights: [
       "Fine-tuned ResNet-50 deep learning model trained on 100 CIFAR-100 fine classes",
+      "Google Colab Training Notebook detailing PyTorch ResNet-50 training & optimization pipeline",
       "Hardware acceleration auto-detection: Apple Silicon Metal (MPS), NVIDIA CUDA, or CPU",
       "Interactive OpenCV Desktop HUD with real-time target region box & Top-5 probability bars",
       "FastAPI Web Computer Vision Studio featuring in-browser webcam & drag-and-drop uploader",
@@ -143,6 +145,7 @@ const PERSONAL_PROJECTS: PersonalProject[] = [
     ],
     githubUrl: "https://github.com/avneetsingh7102/CVmodel",
     liveUrl: "https://huggingface.co/spaces/avneetssing/CVmodel",
+    colabUrl: "https://colab.research.google.com/drive/1kRG-MJQAzK3kpgyBG6t_0IbvaHVDC4IJ?usp=sharing",
     liveLabel: "Hugging Face Spaces",
   },
   {
@@ -1916,6 +1919,18 @@ function PersonalProjectModal({
                   >
                     <GithubIcon size={16} />
                     Source Code
+                    <ExternalLink size={14} />
+                  </a>
+                )}
+                {project.colabUrl && (
+                  <a
+                    href={project.colabUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-3 font-mono text-xs md:text-sm font-bold uppercase tracking-wider border-3 border-black bg-amber-400 text-black shadow-[4px_4px_0px_#0A0A0A] hover:bg-amber-300 transition-colors"
+                  >
+                    <Code2 size={16} />
+                    Training Colab Notebook
                     <ExternalLink size={14} />
                   </a>
                 )}
