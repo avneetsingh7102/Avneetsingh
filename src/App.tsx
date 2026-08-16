@@ -66,7 +66,7 @@ const NAV_LINKS = [
 ];
 
 type PersonalProject = {
-  slug: "sixthsense" | "defect" | "chess" | "fire" | "robot";
+  slug: "sixthsense" | "cvmodel" | "defect" | "chess" | "fire" | "robot";
   status: "deployed" | "wip";
   color: string;
   accent: string;
@@ -113,6 +113,36 @@ const PERSONAL_PROJECTS: PersonalProject[] = [
     ],
     githubUrl: "https://github.com/avneetsingh7102/SixthSense",
     liveUrl: "https://huggingface.co/spaces/avneetssing/SixthSense-Web",
+    liveLabel: "Hugging Face Spaces",
+  },
+  {
+    slug: "cvmodel",
+    status: "deployed",
+    color: "bg-blue",
+    accent: "text-blue",
+    emoji: "👁️",
+    title: "Live CV Studio (ResNet-50)",
+    tagline: "Real-time webcam inference with OpenCV HUD & FastAPI Web Studio",
+    description:
+      "Computer vision studio powered by fine-tuned ResNet-50 trained on CIFAR-100. Features real-time webcam inference, OpenCV HUD overlay, Apple Metal MPS & CUDA acceleration, and FastAPI Web Studio.",
+    longDescription:
+      "A high-performance computer vision application powered by a fine-tuned ResNet-50 deep learning model trained on the CIFAR-100 dataset. Supports real-time webcam inference with interactive OpenCV Heads-Up Display (HUD) presenting Top-5 probability bar charts, hardware auto-detection (Apple Silicon Metal MPS, NVIDIA CUDA, or multi-threaded CPU), image snapshot saving, and an interactive FastAPI Web Vision Studio with drag-and-drop file uploading and glassmorphic confidence indicators.",
+    techStack: [
+      { category: "Computer Vision", items: ["ResNet-50", "PyTorch", "OpenCV", "CIFAR-100"] },
+      { category: "Acceleration Engine", items: ["Apple Metal MPS", "NVIDIA CUDA", "CPU Fallback"] },
+      { category: "Web & API", items: ["FastAPI", "Uvicorn", "Drag-and-Drop Studio", "Pillow"] },
+      { category: "Deploy & Showcase", items: ["Python CLI", "Hugging Face Spaces", "GitHub"] },
+    ],
+    highlights: [
+      "Fine-tuned ResNet-50 deep learning model trained on 100 CIFAR-100 fine classes",
+      "Hardware acceleration auto-detection: Apple Silicon Metal (MPS), NVIDIA CUDA, or CPU",
+      "Interactive OpenCV Desktop HUD with real-time target region box & Top-5 probability bars",
+      "FastAPI Web Computer Vision Studio featuring in-browser webcam & drag-and-drop uploader",
+      "CLI predictor tool for automated single-image inference and evaluation",
+      "Live interactive demo deployed on Hugging Face Spaces & open-source on GitHub",
+    ],
+    githubUrl: "https://github.com/avneetsingh7102/CVmodel",
+    liveUrl: "https://huggingface.co/spaces/avneetssing/CVmodel",
     liveLabel: "Hugging Face Spaces",
   },
   {
@@ -1224,8 +1254,118 @@ function SixthSenseArtifact({ size = "card" }: { size?: "card" | "modal" }) {
         AST Audio: Typing (88%)
       </div>
 
-      <div className="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-yellow text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+      <div class="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-yellow text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
         Groq Llama 3.3 · 60 FPS
+      </div>
+    </div>
+  );
+}
+
+function CVModelArtifact({ size = "card" }: { size?: "card" | "modal" }) {
+  const isModal = size === "modal";
+  return (
+    <div className={`relative w-full ${isModal ? "aspect-[21/9]" : "aspect-[16/9]"} bg-black border-b-3 border-black overflow-hidden`}>
+      <svg
+        viewBox="0 0 320 180"
+        preserveAspectRatio="xMidYMid slice"
+        className="absolute inset-0 h-full w-full"
+        aria-hidden
+      >
+        <defs>
+          <pattern id="cvmodel-grid" patternUnits="userSpaceOnUse" width="16" height="16">
+            <path d="M 16 0 L 0 0 0 16" fill="none" stroke="#1f2937" strokeWidth="0.8" />
+          </pattern>
+          <linearGradient id="cv-hud-scan" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.0" />
+            <stop offset="50%" stopColor="#38bdf8" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.0" />
+          </linearGradient>
+        </defs>
+
+        <rect width="320" height="180" fill="#090d16" />
+        <rect width="320" height="180" fill="url(#cvmodel-grid)" opacity="0.6" />
+
+        {/* Monocular Sweep Scan */}
+        <motion.rect
+          x="0" y="0" width="320" height="40"
+          fill="url(#cv-hud-scan)"
+          animate={{ y: [0, 140, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* Target Bounding Box Reticle */}
+        <motion.rect
+          x="25" y="25" width="125" height="130"
+          fill="none" stroke="#38bdf8" strokeWidth="1.5" strokeDasharray="6,4"
+          animate={{ opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+
+        {/* Corner Reticles */}
+        <path d="M 21 35 L 21 21 L 35 21" fill="none" stroke="#38bdf8" strokeWidth="2.5" />
+        <path d="M 154 35 L 154 21 L 140 21" fill="none" stroke="#38bdf8" strokeWidth="2.5" />
+        <path d="M 21 145 L 21 159 L 35 159" fill="none" stroke="#38bdf8" strokeWidth="2.5" />
+        <path d="M 154 145 L 154 159 L 140 159" fill="none" stroke="#38bdf8" strokeWidth="2.5" />
+
+        {/* Classification Badge */}
+        <rect x="25" y="25" width="95" height="16" fill="#38bdf8" rx="2" />
+        <text x="30" y="36" fill="#090d16" fontSize="9" fontWeight="bold" fontFamily="monospace">
+          RESNET-50: 94.2%
+        </text>
+
+        {/* OpenCV HUD Probability Bar Chart */}
+        <g transform="translate(165, 25)">
+          <text x="0" y="10" fill="#94a3b8" fontSize="8" fontWeight="bold" fontFamily="monospace">
+            TOP-5 CIFAR-100 HUD
+          </text>
+
+          {/* Bar 1 */}
+          <text x="0" y="26" fill="#38bdf8" fontSize="8" fontFamily="monospace">bicycle</text>
+          <rect x="52" y="19" width="85" height="8" fill="#1e293b" rx="2" />
+          <motion.rect x="52" y="19" width="76" height="8" fill="#38bdf8" rx="2"
+            animate={{ width: [70, 76, 72] }} transition={{ duration: 2, repeat: Infinity }} />
+
+          {/* Bar 2 */}
+          <text x="0" y="44" fill="#64748b" fontSize="8" fontFamily="monospace">motorcycle</text>
+          <rect x="52" y="37" width="85" height="8" fill="#1e293b" rx="2" />
+          <rect x="52" y="37" width="18" height="8" fill="#64748b" rx="2" />
+
+          {/* Bar 3 */}
+          <text x="0" y="62" fill="#64748b" fontSize="8" fontFamily="monospace">lawn_mower</text>
+          <rect x="52" y="55" width="85" height="8" fill="#1e293b" rx="2" />
+          <rect x="52" y="55" width="12" height="8" fill="#64748b" rx="2" />
+
+          {/* Bar 4 */}
+          <text x="0" y="80" fill="#64748b" fontSize="8" fontFamily="monospace">pickup_truck</text>
+          <rect x="52" y="73" width="85" height="8" fill="#1e293b" rx="2" />
+          <rect x="52" y="73" width="7" height="8" fill="#64748b" rx="2" />
+
+          {/* Bar 5 */}
+          <text x="0" y="98" fill="#64748b" fontSize="8" fontFamily="monospace">bus</text>
+          <rect x="52" y="91" width="85" height="8" fill="#1e293b" rx="2" />
+          <rect x="52" y="91" width="4" height="8" fill="#64748b" rx="2" />
+        </g>
+      </svg>
+
+      <div className="absolute top-2 left-2 inline-flex items-center gap-1.5 font-mono text-[0.55rem] md:text-[0.65rem] font-bold tracking-wider uppercase bg-emerald-500 text-black px-2 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        <motion.span
+          className="inline-block h-2 w-2 rounded-full bg-black"
+          animate={{ opacity: [1, 0.2, 1] }}
+          transition={{ duration: 1, repeat: Infinity }}
+        />
+        MPS GPU ACCELERATED
+      </div>
+
+      <div className="absolute top-2 right-2 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-sky-500 text-white px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        ResNet-50 · CIFAR-100
+      </div>
+
+      <div className="absolute bottom-2 left-2 hidden sm:inline-flex items-center gap-1.5 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-black text-white px-2 py-1 border-2 border-sky-400">
+        FASTAPI STUDIO · OPENCV HUD
+      </div>
+
+      <div className="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-yellow text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        60 FPS INFERENCE
       </div>
     </div>
   );
@@ -1233,6 +1373,7 @@ function SixthSenseArtifact({ size = "card" }: { size?: "card" | "modal" }) {
 
 function ProjectArtifact({ slug, size }: { slug: PersonalProject["slug"]; size?: "card" | "modal" }) {
   if (slug === "sixthsense") return <SixthSenseArtifact size={size} />;
+  if (slug === "cvmodel") return <CVModelArtifact size={size} />;
   if (slug === "defect") return <DefectArtifact size={size} />;
   if (slug === "chess") return <ChessArtifact size={size} />;
   if (slug === "fire") return <FireSmokeArtifact size={size} />;
