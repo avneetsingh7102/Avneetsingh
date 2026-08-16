@@ -1679,7 +1679,7 @@ function PersonalProjectCard({
 
       <div className="flex-1 flex flex-col">
         {/* Visual artifact — full-bleed at the top of card content */}
-        <ProjectArtifact slug={project.slug} size={project.slug === "sixthsense" ? "modal" : "card"} />
+        <ProjectArtifact slug={project.slug} size="card" />
 
         <div className="p-6 md:p-8">
         {/* Live / WIP badge + emoji row */}
