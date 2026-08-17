@@ -1098,148 +1098,170 @@ function SixthSenseArtifact({ size = "card" }: { size?: "card" | "modal" }) {
       >
         <defs>
           <pattern id="sixthsense-grid" patternUnits="userSpaceOnUse" width="16" height="16">
-            <path d="M 16 0 L 0 0 0 16" fill="none" stroke="#1f2937" strokeWidth="0.8" />
+            <path d="M 16 0 L 0 0 0 16" fill="none" stroke="#111827" strokeWidth="0.8" />
           </pattern>
           <linearGradient id="depth-scan-grad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.0" />
-            <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.3" />
+            <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.25" />
             <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.0" />
           </linearGradient>
+          <radialGradient id="user-depth-halo" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#070a12" stopOpacity="0" />
+          </radialGradient>
         </defs>
 
-        <rect width="320" height="180" fill="#090d16" />
-        <rect width="320" height="180" fill="url(#sixthsense-grid)" opacity="0.6" />
+        {/* Background & Grid */}
+        <rect width="320" height="180" fill="#070a12" />
+        <rect width="320" height="180" fill="url(#sixthsense-grid)" opacity="0.7" />
 
-        {/* Monocular Depth Sweep Gradient */}
+        {/* Monocular Depth Halo around User */}
+        <circle cx="160" cy="90" r="75" fill="url(#user-depth-halo)" />
+        
+        {/* Depth Anything V2 Contour Rings */}
+        <motion.circle
+          cx="160" cy="90" r="55"
+          fill="none" stroke="#3b82f6" strokeWidth="1" strokeDasharray="4,4" opacity="0.4"
+          animate={{ r: [45, 75, 45], opacity: [0.2, 0.5, 0.2] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.circle
+          cx="160" cy="90" r="80"
+          fill="none" stroke="#3b82f6" strokeWidth="1" strokeDasharray="3,6" opacity="0.3"
+          animate={{ r: [70, 95, 70], opacity: [0.1, 0.4, 0.1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+
+        {/* Monocular Depth Sweep Line */}
         <motion.rect
-          x="0" y="0" width="320" height="45"
+          x="0" y="0" width="320" height="40"
           fill="url(#depth-scan-grad)"
-          animate={{ y: [0, 135, 0] }}
+          animate={{ y: [0, 140, 0] }}
           transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        {/* Active Laser Scanning Line */}
-        <motion.line
-          x1="0" y1="0" x2="320" y2="0"
-          stroke="#10b981" strokeWidth="1.5" opacity="0.75"
-          animate={{ y1: [0, 180, 0], y2: [0, 180, 0] }}
-          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-        />
+        {/* Desk & Workstation Setup Graphic */}
+        {/* Desk Surface */}
+        <line x1="20" y1="140" x2="300" y2="140" stroke="#1f2937" strokeWidth="3" />
+        <line x1="20" y1="141" x2="300" y2="141" stroke="#374151" strokeWidth="1" />
 
-        {/* MediaPipe Pose Skeleton with Breathing Motion */}
-        <motion.g
-          animate={{ y: [0, -3, 0] }}
-          transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
-        >
-          {/* Head & Nose */}
-          <circle cx="160" cy="46" r="10" fill="none" stroke="#10b981" strokeWidth="2" />
-          <circle cx="160" cy="46" r="3" fill="#10b981" />
+        {/* Laptop / Monitor Graphic */}
+        <rect x="110" y="95" width="100" height="42" fill="#0f172a" stroke="#3b82f6" strokeWidth="1.5" rx="3" />
+        <rect x="115" y="100" width="90" height="32" fill="#0284c7" opacity="0.2" />
+        <path d="M 100 140 L 220 140 L 210 137 L 110 137 Z" fill="#1e293b" stroke="#3b82f6" strokeWidth="1" />
+
+        {/* Smartphone on Desk */}
+        <rect x="250" y="125" width="22" height="14" fill="#0f172a" stroke="#06b6d4" strokeWidth="1.5" rx="2" />
+        <rect x="252" y="127" width="18" height="10" fill="#06b6d4" opacity="0.3" />
+
+        {/* MediaPipe 33-Pose Skeleton (Person Sitting at Desk Working) */}
+        <g transform="translate(0, 0)">
+          {/* Head & Facial Landmarking */}
+          <circle cx="160" cy="42" r="11" fill="none" stroke="#10b981" strokeWidth="2" />
+          <circle cx="160" cy="42" r="3" fill="#10b981" />
+          <circle cx="156" cy="40" r="1" fill="#ec4899" />
+          <circle cx="164" cy="40" r="1" fill="#ec4899" />
+          <line x1="160" y1="42" x2="160" y2="45" stroke="#ec4899" strokeWidth="1" />
 
           {/* Shoulders & Torso */}
-          <line x1="125" y1="72" x2="195" y2="72" stroke="#10b981" strokeWidth="2.5" />
-          <line x1="125" y1="72" x2="140" y2="135" stroke="#10b981" strokeWidth="2" />
-          <line x1="195" y1="72" x2="180" y2="135" stroke="#10b981" strokeWidth="2" />
-          <line x1="140" y1="135" x2="180" y2="135" stroke="#10b981" strokeWidth="2" />
+          <line x1="120" y1="65" x2="200" y2="65" stroke="#10b981" strokeWidth="2.5" />
+          <line x1="120" y1="65" x2="135" y2="125" stroke="#10b981" strokeWidth="2" />
+          <line x1="200" y1="65" x2="185" y2="125" stroke="#10b981" strokeWidth="2" />
+          <line x1="135" y1="125" x2="185" y2="125" stroke="#10b981" strokeWidth="2" />
+          {/* Spine */}
+          <line x1="160" y1="65" x2="160" y2="125" stroke="#10b981" strokeWidth="1.5" strokeDasharray="3,3" />
 
-          {/* Upper Arms */}
-          <line x1="125" y1="72" x2="102" y2="108" stroke="#10b981" strokeWidth="2" />
-          <line x1="195" y1="72" x2="218" y2="108" stroke="#10b981" strokeWidth="2" />
+          {/* Arms & Hands Typing on Keyboard */}
+          <line x1="120" y1="65" x2="105" y2="100" stroke="#10b981" strokeWidth="2" />
+          <line x1="200" y1="65" x2="215" y2="100" stroke="#10b981" strokeWidth="2" />
+
+          <motion.line
+            x1="105" y1="100"
+            animate={{ x2: [130, 135, 128, 133, 130], y2: [132, 128, 134, 129, 132] }}
+            transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+            stroke="#10b981" strokeWidth="2"
+          />
+          <motion.circle
+            r="4" fill="#ec4899" stroke="#ffffff" strokeWidth="1"
+            animate={{ cx: [130, 135, 128, 133, 130], cy: [132, 128, 134, 129, 132] }}
+            transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+          />
+
+          <motion.line
+            x1="215" y1="100"
+            animate={{ x2: [190, 185, 192, 187, 190], y2: [132, 129, 133, 128, 132] }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+            stroke="#10b981" strokeWidth="2"
+          />
+          <motion.circle
+            r="4" fill="#ec4899" stroke="#ffffff" strokeWidth="1"
+            animate={{ cx: [190, 185, 192, 187, 190], cy: [132, 129, 133, 128, 132] }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+          />
 
           {/* Keypoint Dots */}
           {[
-            [125, 72], [195, 72], [102, 108], [218, 108], [140, 135], [180, 135]
+            [120, 65], [200, 65], [105, 100], [215, 100], [135, 125], [185, 125]
           ].map(([kx, ky], idx) => (
             <circle key={idx} cx={kx} cy={ky} r="3" fill="#ec4899" />
           ))}
-        </motion.g>
+        </g>
 
-        {/* Dynamic Typing Wrists & Forearms */}
+        {/* YOLOv8 Bounding Box 1: PERSON */}
         <motion.g>
-          {/* Left Forearm & Wrist (Moving in typing rhythm) */}
-          <motion.line
-            x1="102" y1="108"
-            animate={{ x2: [115, 118, 112, 117, 115], y2: [128, 124, 130, 125, 128] }}
-            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
-            stroke="#10b981" strokeWidth="2"
+          <motion.rect
+            x="95" y="24" width="130" height="118"
+            fill="rgba(16, 185, 129, 0.08)" stroke="#10b981" strokeWidth="1.5" strokeDasharray="5,4" rx="4"
+            animate={{ opacity: [0.6, 1, 0.6] }}
+            transition={{ duration: 2.2, repeat: Infinity }}
           />
-          <motion.circle
-            r="5" fill="#FFD60A" stroke="#ffffff" strokeWidth="1.5"
-            animate={{ cx: [115, 118, 112, 117, 115], cy: [128, 124, 130, 125, 128] }}
-            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
-          />
-
-          {/* Right Forearm & Wrist (Moving in typing rhythm) */}
-          <motion.line
-            x1="218" y1="108"
-            animate={{ x2: [205, 202, 208, 203, 205], y2: [128, 125, 129, 124, 128] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-            stroke="#10b981" strokeWidth="2"
-          />
-          <motion.circle
-            r="5" fill="#FFD60A" stroke="#ffffff" strokeWidth="1.5"
-            animate={{ cx: [205, 202, 208, 203, 205], cy: [128, 125, 129, 124, 128] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-          />
-
-          {/* Wrist-to-Laptop Dynamic Tether Line */}
-          <motion.line
-            y1="128" x2="160" y2="139"
-            stroke="#FFD60A" strokeWidth="2" strokeDasharray="3 3"
-            animate={{
-              x1: [115, 118, 112, 117, 115],
-              opacity: [1, 0.4, 1],
-              strokeWidth: [1.8, 2.6, 1.8]
-            }}
-            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <circle cx="160" cy="139" r="4" fill="#FFD60A" />
+          <rect x="95" y="24" width="90" height="15" fill="#10b981" rx="2" />
+          <text x="100" y="35" fill="#090d16" fontSize="8" fontWeight="bold" fontFamily="monospace">
+            YOLOv8: PERSON 98%
+          </text>
         </motion.g>
 
-        {/* YOLOv8 Object Detection Bounding Box: Laptop (Pulsating) */}
-        <motion.g
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-        >
+        {/* YOLOv8 Bounding Box 2: LAPTOP */}
+        <motion.g>
           <motion.rect
-            x="90" y="118" width="140" height="42"
-            fill="rgba(16,185,129,0.12)" stroke="#10b981" rx="4"
-            animate={{ strokeWidth: [2, 2.8, 2], opacity: [0.85, 1, 0.85] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            x="105" y="90" width="110" height="52"
+            fill="rgba(59, 130, 246, 0.12)" stroke="#3b82f6" strokeWidth="1.5" rx="3"
+            animate={{ opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 2, repeat: Infinity }}
           />
-          <text x="96" y="132" fill="#10b981" style={{ font: "bold 9px 'JetBrains Mono', monospace" }}>laptop 96%</text>
+          <rect x="105" y="90" width="85" height="13" fill="#3b82f6" rx="2" />
+          <text x="109" y="100" fill="#ffffff" fontSize="7" fontWeight="bold" fontFamily="monospace">
+            YOLOv8: LAPTOP 96%
+          </text>
         </motion.g>
 
-        {/* YOLOv8 Object Detection Bounding Box: Cell Phone */}
-        <motion.g
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.4, delay: 0.4 }}
-        >
+        {/* YOLOv8 Bounding Box 3: PHONE */}
+        <motion.g>
           <motion.rect
-            x="245" y="110" width="35" height="48"
-            fill="rgba(6,182,212,0.12)" stroke="#06b6d4" rx="3"
-            animate={{ strokeWidth: [1.8, 2.5, 1.8], opacity: [0.75, 1, 0.75] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+            x="242" y="120" width="38" height="24"
+            fill="rgba(6, 182, 212, 0.15)" stroke="#06b6d4" strokeWidth="1.5" rx="3"
+            animate={{ opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 2.5, repeat: Infinity }}
           />
-          <text x="248" y="122" fill="#06b6d4" style={{ font: "bold 8px 'JetBrains Mono', monospace" }}>phone</text>
+          <rect x="242" y="120" width="38" height="11" fill="#06b6d4" rx="1" />
+          <text x="244" y="128" fill="#090d16" fontSize="6.5" fontWeight="bold" fontFamily="monospace">
+            PHONE 91%
+          </text>
         </motion.g>
       </svg>
 
-      {/* HUD Badges Overlay */}
+      {/* HUD Telemetry Badges Overlay */}
       <div className="absolute top-2 left-2 inline-flex items-center gap-1.5 font-mono text-[0.55rem] md:text-[0.65rem] font-bold tracking-widest uppercase bg-emerald-600 text-white px-2 py-1 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
         <motion.span
           className="inline-block h-2 w-2 rounded-full bg-white"
           animate={{ opacity: [1, 0.2, 1] }}
           transition={{ duration: 1, repeat: Infinity }}
         />
-        STATUS: WORKING
+        STATUS: WORKING (FOCUS)
       </div>
 
       <div className="absolute top-2 right-2 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-blue text-white px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
-        YOLOv8 + ByteTrack
+        YOLOv8 · MediaPipe · Depth V2
       </div>
 
       {/* Live Audio Equalizer Waveform Badge */}
