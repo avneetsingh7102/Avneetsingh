@@ -1316,6 +1316,57 @@ function CVModelArtifact({ size = "card" }: { size?: "card" | "modal" }) {
           RESNET-50: 94.2%
         </text>
 
+        {/* Bicycle Vector Illustration inside Bounding Detection Box */}
+        <g transform="translate(35, 55)">
+          {/* Rear Wheel */}
+          <motion.circle
+            cx="22" cy="50" r="18"
+            fill="none" stroke="#38bdf8" strokeWidth="2.5"
+            animate={{ strokeDashoffset: [0, 20] }} strokeDasharray="5,4"
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          />
+          <circle cx="22" cy="50" r="3" fill="#38bdf8" />
+
+          {/* Front Wheel */}
+          <motion.circle
+            cx="82" cy="50" r="18"
+            fill="none" stroke="#38bdf8" strokeWidth="2.5"
+            animate={{ strokeDashoffset: [0, 20] }} strokeDasharray="5,4"
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          />
+          <circle cx="82" cy="50" r="3" fill="#38bdf8" />
+
+          {/* Bottom Bracket */}
+          <circle cx="48" cy="50" r="4" fill="#0284c7" stroke="#38bdf8" strokeWidth="1.5" />
+          
+          {/* Chain Stay & Seat Stay */}
+          <line x1="22" y1="50" x2="48" y2="50" stroke="#38bdf8" strokeWidth="2" />
+          <line x1="22" y1="50" x2="40" y2="24" stroke="#38bdf8" strokeWidth="2" />
+          
+          {/* Seat Tube */}
+          <line x1="48" y1="50" x2="40" y2="24" stroke="#38bdf8" strokeWidth="2" />
+          {/* Seat Post & Saddle */}
+          <line x1="40" y1="24" x2="38" y2="16" stroke="#38bdf8" strokeWidth="2" />
+          <path d="M 32 16 L 46 16 C 48 16 48 18 44 19 Z" fill="#38bdf8" />
+
+          {/* Down Tube & Top Tube */}
+          <line x1="48" y1="50" x2="70" y2="20" stroke="#38bdf8" strokeWidth="2" />
+          <line x1="40" y1="24" x2="70" y2="20" stroke="#38bdf8" strokeWidth="2" />
+
+          {/* Fork & Handlebars */}
+          <line x1="82" y1="50" x2="70" y2="20" stroke="#38bdf8" strokeWidth="2" />
+          <line x1="70" y1="20" x2="68" y2="12" stroke="#38bdf8" strokeWidth="2" />
+          <path d="M 62 12 L 74 12" fill="none" stroke="#38bdf8" strokeWidth="2.5" strokeLinecap="round" />
+
+          {/* Pulsing Detection Heatmap Frame */}
+          <motion.rect
+            x="0" y="2" width="104" height="70"
+            fill="rgba(56, 189, 248, 0.12)" stroke="rgba(56, 189, 248, 0.5)" strokeWidth="1" rx="4"
+            animate={{ opacity: [0.3, 0.85, 0.3] }}
+            transition={{ duration: 1.8, repeat: Infinity }}
+          />
+        </g>
+
         {/* OpenCV HUD Probability Bar Chart */}
         <g transform="translate(165, 25)">
           <text x="0" y="10" fill="#94a3b8" fontSize="8" fontWeight="bold" fontFamily="monospace">
