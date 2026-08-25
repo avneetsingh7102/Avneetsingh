@@ -515,9 +515,9 @@ function Hero() {
           initial={{ opacity: 0 }} 
           animate={{ opacity: 1 }} 
           transition={{ delay: 1, duration: 0.5 }}
-          className="mt-6 font-mono text-sm tracking-widest md:text-base font-bold uppercase"
+          className="mt-6 font-mono text-sm tracking-widest md:text-base font-bold uppercase text-black/70"
         >
-          Product & Innovation · MSc Science Computing · ITU Linz
+          Artificial Intelligence · Spatial Computing · Product Strategy
         </motion.p>
 
         {/* Two-column layout */}
@@ -526,12 +526,9 @@ function Hero() {
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1.2, duration: 0.5 }}
-            className="max-w-lg font-serif text-xl leading-relaxed md:text-2xl"
+            className="max-w-lg font-serif text-xl leading-relaxed md:text-2xl font-normal"
           >
-            I bridge product strategy and emerging technology — from shipping
-            fintech platforms to 50,000+ users, to building VR journaling apps
-            and humanitarian ML tools. Currently studying Future Industries at
-            ITU Linz, Austria.
+            Building at the boundary of human perception and artificial intelligence — engineering tools that illuminate complex worlds.
           </motion.p>
 
           {/* CTA */}
