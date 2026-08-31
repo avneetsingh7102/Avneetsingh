@@ -65,8 +65,15 @@ const NAV_LINKS = [
   { label: "Contact", href: "#contact" },
 ];
 
+type BenchmarkRow = {
+  metric: string;
+  fullFrame: string;
+  activeGaze: string;
+  delta: string;
+};
+
 type PersonalProject = {
-  slug: "sixthsense" | "cvmodel" | "defect" | "chess" | "fire" | "robot";
+  slug: "sixthsense" | "cvmodel" | "activegaze" | "defect" | "chess" | "fire" | "robot";
   status: "deployed" | "wip";
   color: string;
   accent: string;
@@ -77,6 +84,7 @@ type PersonalProject = {
   longDescription: string;
   techStack: { category: string; items: string[] }[];
   highlights: string[];
+  benchmarks?: BenchmarkRow[];
   githubUrl?: string;
   liveUrl?: string;
   liveLabel?: string;
@@ -114,6 +122,42 @@ const PERSONAL_PROJECTS: PersonalProject[] = [
     ],
     githubUrl: "https://github.com/avneetsingh7102/SixthSense",
     liveUrl: "https://huggingface.co/spaces/avneetssing/SixthSense-Web",
+    liveLabel: "Hugging Face Spaces",
+  },
+  {
+    slug: "activegaze",
+    status: "deployed",
+    color: "bg-yellow",
+    accent: "text-amber-600",
+    emoji: "👁️",
+    title: "Active Gaze + SmolVLM",
+    tagline: "Biological Scale-Adaptive Attentional Vision Engine & Efficient Multimodal Inference",
+    description:
+      "Bio-inspired visual attention engine based on the Eriksen Zoom-Lens model. Decouples <0.6ms Magnocellular peripheral saliency from a Parvocellular foveal extractor for SmolVLM-256M, reducing pixel FLOPs by 96.7% while preserving high-resolution text and hazard acuity.",
+    longDescription:
+      "Traditional Vision-Language Models (VLMs) ingest full, uniformly downscaled high-resolution video frames, incurring quadratic computational costs and blurring fine text or small hazards. Active Gaze + SmolVLM mimics the primate visual system by decoupling perception into two neurocomputational pathways: a sub-millisecond Magnocellular peripheral glance detecting motion centroids, Itti-Koch opponency, and spectral surprise on a 160x120 buffer, and a Parvocellular scale-adaptive Zoom-Lens engine that dynamically dilates/constricts a native high-resolution foveal crop (120px–560px) around salient proto-objects. The extracted foveal patch is fed into SmolVLM-256M-Instruct (SigLIP-93M + SmolLM2-135M) for zero-loss language reasoning, achieving a 96.7% pixel FLOPs reduction with 0.45ms gaze latency.",
+    techStack: [
+      { category: "Neuro-Vision Engine", items: ["Magnocellular Stream", "Parvocellular Fovea", "Zoom-Lens Attention", "Spectral Saliency", "Proto-Object Basins"] },
+      { category: "Multimodal VLM", items: ["SmolVLM-256M", "SigLIP-93M", "SmolLM2-135M", "PyTorch", "Hugging Face Transformers"] },
+      { category: "Computer Vision & Edge", items: ["OpenCV", "NumPy Covariance Moments", "Zero-Copy Crop", "Sub-Millisecond Pipeline"] },
+      { category: "Deploy & Web GUI", items: ["Gradio (Athenaeum Editorial)", "Hugging Face Spaces", "GitHub", "Python 3.10+"] },
+    ],
+    highlights: [
+      "Biological Zoom-Lens attention model based on Eriksen & St. James cognitive psychology framework",
+      "Dual-stream neurocomputational pipeline: <0.6ms Magnocellular peripheral glance + Parvocellular foveal zoom",
+      "96.7% pixel compression (2.07M px down to ~69k px) with zero downscaling blur on fine text & small objects",
+      "Sub-millisecond gaze latency (0.45 ms / 100+ FPS) on standard edge CPU/GPU architectures",
+      "Integrated with SmolVLM-256M-Instruct for efficient on-device visual reasoning & captioning",
+      "Deployed interactive side-by-side comparison Gradio web app on Hugging Face Spaces & open-source on GitHub",
+    ],
+    benchmarks: [
+      { metric: "Input Pixels / Keyframe", fullFrame: "2,073,600 px (1080p)", activeGaze: "69,169 px", delta: "96.7% reduction" },
+      { metric: "Gaze Latency", fullFrame: "N/A", activeGaze: "0.45 ms", delta: "Real-time 100+ FPS" },
+      { metric: "Fine Text Recognition", fullFrame: "Confused / Hallucinated", activeGaze: "Exact reading", delta: "Foveal acuity preserved" },
+      { metric: "Compute FLOPs", fullFrame: "100% (Baseline)", activeGaze: "~15–20%", delta: "Low edge footprint" },
+    ],
+    githubUrl: "https://github.com/avneetsingh7102/Active-Gaze-Smol-VLM",
+    liveUrl: "https://huggingface.co/spaces/avneetssing/Active-Gaze-SmolVLM",
     liveLabel: "Hugging Face Spaces",
   },
   {
@@ -1444,8 +1488,182 @@ function CVModelArtifact({ size = "card" }: { size?: "card" | "modal" }) {
   );
 }
 
+function ActiveGazeArtifact({ size = "card" }: { size?: "card" | "modal" }) {
+  const isModal = size === "modal";
+  return (
+    <div className={`relative w-full ${isModal ? "aspect-[21/9]" : "aspect-[16/9]"} bg-black border-b-3 border-black overflow-hidden`}>
+      <svg
+        viewBox="0 0 320 180"
+        preserveAspectRatio="xMidYMid slice"
+        className="absolute inset-0 h-full w-full"
+        aria-hidden
+      >
+        <defs>
+          <pattern id="activegaze-grid" patternUnits="userSpaceOnUse" width="16" height="16">
+            <path d="M 16 0 L 0 0 0 16" fill="none" stroke="#1f2937" strokeWidth="0.8" />
+          </pattern>
+          <linearGradient id="foveal-laser" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.0" />
+            <stop offset="50%" stopColor="#f59e0b" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#ef4444" stopOpacity="0.0" />
+          </linearGradient>
+          <radialGradient id="saccade-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.35" />
+            <stop offset="60%" stopColor="#eab308" stopOpacity="0.1" />
+            <stop offset="100%" stopColor="#000" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
+        {/* Canvas background */}
+        <rect width="320" height="180" fill="#070a12" />
+        <rect width="320" height="180" fill="url(#activegaze-grid)" opacity="0.6" />
+
+        {/* ─── LEFT: 1080p Video Buffer & Zoom-Lens Saccade Reticle ─── */}
+        {/* Monocular 1080p Frame Area */}
+        <rect x="18" y="20" width="135" height="140" fill="#0b1120" stroke="#1e293b" strokeWidth="1.5" rx="3" />
+        
+        {/* Saccade Target Glow */}
+        <circle cx="85" cy="90" r="38" fill="url(#saccade-glow)" />
+
+        {/* High Voltage Danger Box Graphic being targeted */}
+        <g transform="translate(48, 62)">
+          {/* Industrial Panel Backplate */}
+          <rect x="0" y="0" width="75" height="56" fill="#1e293b" stroke="#f59e0b" strokeWidth="1.5" rx="3" />
+          {/* Caution Stripes Bar */}
+          <rect x="4" y="4" width="67" height="8" fill="#f59e0b" />
+          <line x1="12" y1="4" x2="6" y2="12" stroke="#000" strokeWidth="2" />
+          <line x1="22" y1="4" x2="16" y2="12" stroke="#000" strokeWidth="2" />
+          <line x1="32" y1="4" x2="26" y2="12" stroke="#000" strokeWidth="2" />
+          <line x1="42" y1="4" x2="36" y2="12" stroke="#000" strokeWidth="2" />
+          <line x1="52" y1="4" x2="46" y2="12" stroke="#000" strokeWidth="2" />
+          <line x1="62" y1="4" x2="56" y2="12" stroke="#000" strokeWidth="2" />
+
+          {/* Electric Bolt Icon */}
+          <path d="M 16 22 L 10 34 L 17 34 L 13 46 L 24 32 L 18 32 Z" fill="#ef4444" />
+          
+          {/* Fine High-Frequency Text */}
+          <text x="26" y="28" fill="#ffffff" fontSize="7" fontWeight="bold" fontFamily="monospace">480V AC</text>
+          <text x="26" y="38" fill="#ef4444" fontSize="6.5" fontWeight="bold" fontFamily="monospace">DANGER</text>
+          <text x="6" y="50" fill="#94a3b8" fontSize="4.5" fontFamily="monospace">HIGH VOLTAGE</text>
+        </g>
+
+        {/* Magnocellular Rapid Saliency Sweep Beam */}
+        <motion.line
+          x1="18" y1="20" x2="153" y2="20"
+          stroke="#f59e0b" strokeWidth="1.5" opacity="0.8"
+          animate={{ y1: [20, 160, 20], y2: [20, 160, 20] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* Parvocellular Zoom-Lens Scale-Adaptive Fovea Reticle */}
+        <motion.g
+          animate={{
+            scale: [0.95, 1.06, 0.95],
+          }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+          style={{ transformOrigin: "85px 90px" }}
+        >
+          {/* Foveal Bounding Box */}
+          <rect
+            x="42" y="55" width="86" height="70"
+            fill="none" stroke="#f59e0b" strokeWidth="2" strokeDasharray="6,4" rx="2"
+          />
+          {/* Corner Focus Brackets */}
+          <path d="M 38 67 L 38 51 L 54 51" fill="none" stroke="#f59e0b" strokeWidth="3" />
+          <path d="M 132 67 L 132 51 L 116 51" fill="none" stroke="#f59e0b" strokeWidth="3" />
+          <path d="M 38 113 L 38 129 L 54 129" fill="none" stroke="#f59e0b" strokeWidth="3" />
+          <path d="M 132 113 L 132 129 L 116 129" fill="none" stroke="#f59e0b" strokeWidth="3" />
+
+          {/* Fovea Centralis Crosshair */}
+          <circle cx="85" cy="90" r="4" fill="none" stroke="#ef4444" strokeWidth="1.5" />
+          <circle cx="85" cy="90" r="1.5" fill="#ef4444" />
+          <line x1="75" y1="90" x2="81" y2="90" stroke="#ef4444" strokeWidth="1" />
+          <line x1="89" y1="90" x2="95" y2="90" stroke="#ef4444" strokeWidth="1" />
+          <line x1="85" y1="80" x2="85" y2="86" stroke="#ef4444" strokeWidth="1" />
+          <line x1="85" y1="94" x2="85" y2="100" stroke="#ef4444" strokeWidth="1" />
+        </motion.g>
+
+        {/* Target Badge */}
+        <rect x="25" y="26" width="105" height="14" fill="#f59e0b" rx="2" />
+        <text x="29" y="36" fill="#000000" fontSize="7.5" fontWeight="bold" fontFamily="monospace">
+          FOVEA [x*,y*] · 0.45ms
+        </text>
+
+        {/* ─── RIGHT: SmolVLM-256M Dual-Stream Telemetry & Language Reasoning ─── */}
+        <g transform="translate(168, 22)">
+          {/* Header */}
+          <text x="0" y="10" fill="#f59e0b" fontSize="8" fontWeight="bold" fontFamily="monospace">
+            SMOLVLM-256M REASONING
+          </text>
+
+          {/* Stream 1: Magnocellular Latency */}
+          <text x="0" y="25" fill="#94a3b8" fontSize="7" fontFamily="monospace">Magnocellular Glance:</text>
+          <text x="100" y="25" fill="#10b981" fontSize="7" fontWeight="bold" fontFamily="monospace">&lt;0.6ms</text>
+
+          {/* Stream 2: Parvocellular Zoom */}
+          <text x="0" y="38" fill="#94a3b8" fontSize="7" fontFamily="monospace">Zoom-Lens Crop:</text>
+          <text x="100" y="38" fill="#38bdf8" fontSize="7" fontWeight="bold" fontFamily="monospace">120-560px</text>
+
+          {/* Pixel FLOPs Compression Bar */}
+          <text x="0" y="55" fill="#94a3b8" fontSize="7" fontFamily="monospace">Token / Pixel FLOPs:</text>
+          <rect x="0" y="61" width="138" height="9" fill="#1e293b" rx="2" />
+          {/* 96.7% reduction bar */}
+          <motion.rect
+            x="0" y="61" width="133" height="9" fill="#10b981" rx="2"
+            animate={{ width: [126, 134, 126] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <text x="4" y="68" fill="#000000" fontSize="6.5" fontWeight="bold" fontFamily="monospace">
+            -96.7% PIXEL REDUCTION
+          </text>
+
+          {/* VLM Natural Language Reasoning Box */}
+          <rect x="0" y="78" width="138" height="52" fill="#0f172a" stroke="#334155" strokeWidth="1" rx="3" />
+          <text x="6" y="90" fill="#f59e0b" fontSize="6.5" fontWeight="bold" fontFamily="monospace">
+            &gt; SmolVLM-Instruct Output:
+          </text>
+          <text x="6" y="103" fill="#e2e8f0" fontSize="6" fontFamily="monospace">
+            "High-voltage warning label
+          </text>
+          <text x="6" y="114" fill="#ef4444" fontSize="6" fontWeight="bold" fontFamily="monospace">
+            reading '480V AC DANGER'."
+          </text>
+          <motion.rect
+            x="96" y="108" width="5" height="7" fill="#f59e0b"
+            animate={{ opacity: [1, 0, 1] }}
+            transition={{ duration: 0.8, repeat: Infinity }}
+          />
+        </g>
+      </svg>
+
+      {/* HUD Overlay Badges */}
+      <div className="absolute top-2 left-2 inline-flex items-center gap-1.5 font-mono text-[0.55rem] md:text-[0.65rem] font-bold tracking-wider uppercase bg-amber-400 text-black px-2 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        <motion.span
+          className="inline-block h-2 w-2 rounded-full bg-black"
+          animate={{ opacity: [1, 0.2, 1] }}
+          transition={{ duration: 1, repeat: Infinity }}
+        />
+        FOVEAL LOCK · 0.45MS
+      </div>
+
+      <div className="absolute top-2 right-2 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-amber-500 text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        SigLIP-93M · SmolLM2-135M
+      </div>
+
+      <div className="absolute bottom-2 left-2 hidden sm:inline-flex items-center gap-1.5 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-black text-emerald-400 px-2 py-1 border-2 border-emerald-500">
+        PIXEL FLOPs: -96.7% (2.07M → 69k)
+      </div>
+
+      <div className="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-yellow text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        ERIKSEN ATTENTION ENGINE
+      </div>
+    </div>
+  );
+}
+
 function ProjectArtifact({ slug, size }: { slug: PersonalProject["slug"]; size?: "card" | "modal" }) {
   if (slug === "sixthsense") return <SixthSenseArtifact size={size} />;
+  if (slug === "activegaze") return <ActiveGazeArtifact size={size} />;
   if (slug === "cvmodel") return <CVModelArtifact size={size} />;
   if (slug === "defect") return <DefectArtifact size={size} />;
   if (slug === "chess") return <ChessArtifact size={size} />;
@@ -2060,6 +2278,38 @@ function PersonalProjectModal({
                   ))}
                 </div>
               </div>
+
+              {/* Benchmarks (if available) */}
+              {project.benchmarks && project.benchmarks.length > 0 && (
+                <div className="mt-10">
+                  <div className="font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase text-black/50 mb-4 flex items-center gap-2">
+                    <Zap size={14} />
+                    Empirical Benchmarks & Efficiency Gains
+                  </div>
+                  <div className="border-3 border-black bg-white shadow-[4px_4px_0px_#0A0A0A] overflow-x-auto">
+                    <table className="w-full text-left border-collapse text-xs md:text-sm">
+                      <thead>
+                        <tr className="border-b-3 border-black bg-yellow text-black font-mono uppercase tracking-wider font-bold">
+                          <th className="p-3 border-r-2 border-black">Metric</th>
+                          <th className="p-3 border-r-2 border-black">Full Frame (Naive 1080p)</th>
+                          <th className="p-3 border-r-2 border-black">Active Gaze + SmolVLM</th>
+                          <th className="p-3">Delta / Advantage</th>
+                        </tr>
+                      </thead>
+                      <tbody className="font-mono divide-y-2 divide-black">
+                        {project.benchmarks.map((b, idx) => (
+                          <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-bg"}>
+                            <td className="p-3 font-bold border-r-2 border-black">{b.metric}</td>
+                            <td className="p-3 text-black/60 border-r-2 border-black">{b.fullFrame}</td>
+                            <td className="p-3 font-bold text-blue border-r-2 border-black">{b.activeGaze}</td>
+                            <td className="p-3 font-bold text-emerald-700">{b.delta}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
 
               {/* Footer with re-emphasised live link */}
               <div className="mt-12 border-t-3 border-black pt-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
