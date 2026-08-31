@@ -1502,160 +1502,128 @@ function ActiveGazeArtifact({ size = "card" }: { size?: "card" | "modal" }) {
           <pattern id="activegaze-grid" patternUnits="userSpaceOnUse" width="16" height="16">
             <path d="M 16 0 L 0 0 0 16" fill="none" stroke="#1f2937" strokeWidth="0.8" />
           </pattern>
-          <linearGradient id="foveal-laser" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.0" />
-            <stop offset="50%" stopColor="#f59e0b" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#ef4444" stopOpacity="0.0" />
-          </linearGradient>
-          <radialGradient id="saccade-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.35" />
-            <stop offset="60%" stopColor="#eab308" stopOpacity="0.1" />
-            <stop offset="100%" stopColor="#000" stopOpacity="0" />
+          <radialGradient id="fovea-radial-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.28" />
+            <stop offset="70%" stopColor="#f59e0b" stopOpacity="0.05" />
+            <stop offset="100%" stopColor="#000000" stopOpacity="0" />
           </radialGradient>
         </defs>
 
-        {/* Canvas background */}
-        <rect width="320" height="180" fill="#070a12" />
-        <rect width="320" height="180" fill="url(#activegaze-grid)" opacity="0.6" />
+        {/* Clean Canvas Background */}
+        <rect width="320" height="180" fill="#090d16" />
+        <rect width="320" height="180" fill="url(#activegaze-grid)" opacity="0.5" />
 
-        {/* ─── LEFT: 1080p Video Buffer & Zoom-Lens Saccade Reticle ─── */}
-        {/* Monocular 1080p Frame Area */}
-        <rect x="18" y="20" width="135" height="140" fill="#0b1120" stroke="#1e293b" strokeWidth="1.5" rx="3" />
-        
-        {/* Saccade Target Glow */}
-        <circle cx="85" cy="90" r="38" fill="url(#saccade-glow)" />
-
-        {/* High Voltage Danger Box Graphic being targeted */}
-        <g transform="translate(48, 62)">
-          {/* Industrial Panel Backplate */}
-          <rect x="0" y="0" width="75" height="56" fill="#1e293b" stroke="#f59e0b" strokeWidth="1.5" rx="3" />
-          {/* Caution Stripes Bar */}
-          <rect x="4" y="4" width="67" height="8" fill="#f59e0b" />
-          <line x1="12" y1="4" x2="6" y2="12" stroke="#000" strokeWidth="2" />
-          <line x1="22" y1="4" x2="16" y2="12" stroke="#000" strokeWidth="2" />
-          <line x1="32" y1="4" x2="26" y2="12" stroke="#000" strokeWidth="2" />
-          <line x1="42" y1="4" x2="36" y2="12" stroke="#000" strokeWidth="2" />
-          <line x1="52" y1="4" x2="46" y2="12" stroke="#000" strokeWidth="2" />
-          <line x1="62" y1="4" x2="56" y2="12" stroke="#000" strokeWidth="2" />
-
-          {/* Electric Bolt Icon */}
-          <path d="M 16 22 L 10 34 L 17 34 L 13 46 L 24 32 L 18 32 Z" fill="#ef4444" />
-          
-          {/* Fine High-Frequency Text */}
-          <text x="26" y="28" fill="#ffffff" fontSize="7" fontWeight="bold" fontFamily="monospace">480V AC</text>
-          <text x="26" y="38" fill="#ef4444" fontSize="6.5" fontWeight="bold" fontFamily="monospace">DANGER</text>
-          <text x="6" y="50" fill="#94a3b8" fontSize="4.5" fontFamily="monospace">HIGH VOLTAGE</text>
-        </g>
-
-        {/* Magnocellular Rapid Saliency Sweep Beam */}
+        {/* Peripheral Saccade Glance Laser Beam */}
         <motion.line
-          x1="18" y1="20" x2="153" y2="20"
-          stroke="#f59e0b" strokeWidth="1.5" opacity="0.8"
-          animate={{ y1: [20, 160, 20], y2: [20, 160, 20] }}
-          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+          x1="0" y1="0" x2="320" y2="0"
+          stroke="#f59e0b" strokeWidth="1.2" opacity="0.6"
+          animate={{ y1: [0, 180, 0], y2: [0, 180, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        {/* Parvocellular Zoom-Lens Scale-Adaptive Fovea Reticle */}
-        <motion.g
-          animate={{
-            scale: [0.95, 1.06, 0.95],
-          }}
-          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-          style={{ transformOrigin: "85px 90px" }}
-        >
-          {/* Foveal Bounding Box */}
-          <rect
-            x="42" y="55" width="86" height="70"
-            fill="none" stroke="#f59e0b" strokeWidth="2" strokeDasharray="6,4" rx="2"
+        {/* ─── LEFT: Biological Zoom-Lens Foveal Focus ─── */}
+        <g transform="translate(80, 90)">
+          {/* Radial Fovea Glow */}
+          <circle cx="0" cy="0" r="54" fill="url(#fovea-radial-glow)" />
+
+          {/* Concentric Bio-Attentive Ripples */}
+          <motion.circle
+            cx="0" cy="0" r="42"
+            fill="none" stroke="#f59e0b" strokeWidth="1" strokeDasharray="4,4"
+            animate={{ scale: [0.85, 1.15, 0.85], opacity: [0.3, 0.7, 0.3] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
           />
-          {/* Corner Focus Brackets */}
-          <path d="M 38 67 L 38 51 L 54 51" fill="none" stroke="#f59e0b" strokeWidth="3" />
-          <path d="M 132 67 L 132 51 L 116 51" fill="none" stroke="#f59e0b" strokeWidth="3" />
-          <path d="M 38 113 L 38 129 L 54 129" fill="none" stroke="#f59e0b" strokeWidth="3" />
-          <path d="M 132 113 L 132 129 L 116 129" fill="none" stroke="#f59e0b" strokeWidth="3" />
+          <motion.circle
+            cx="0" cy="0" r="52"
+            fill="none" stroke="#f59e0b" strokeWidth="1" strokeDasharray="2,5"
+            animate={{ scale: [1, 1.25, 1], opacity: [0.15, 0.45, 0.15] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+          />
 
-          {/* Fovea Centralis Crosshair */}
-          <circle cx="85" cy="90" r="4" fill="none" stroke="#ef4444" strokeWidth="1.5" />
-          <circle cx="85" cy="90" r="1.5" fill="#ef4444" />
-          <line x1="75" y1="90" x2="81" y2="90" stroke="#ef4444" strokeWidth="1" />
-          <line x1="89" y1="90" x2="95" y2="90" stroke="#ef4444" strokeWidth="1" />
-          <line x1="85" y1="80" x2="85" y2="86" stroke="#ef4444" strokeWidth="1" />
-          <line x1="85" y1="94" x2="85" y2="100" stroke="#ef4444" strokeWidth="1" />
-        </motion.g>
+          {/* High-Resolution Foveal Target Badge */}
+          <rect x="-35" y="-22" width="70" height="44" fill="#1e293b" stroke="#f59e0b" strokeWidth="1.5" rx="3" />
+          <path d="M -8 -8 L -14 4 L -7 4 L -11 12 L 0 0 L -6 0 Z" fill="#ef4444" />
+          <text x="3" y="-1" fill="#ffffff" fontSize="7" fontWeight="bold" fontFamily="monospace">480V</text>
+          <text x="3" y="8" fill="#ef4444" fontSize="6.5" fontWeight="bold" fontFamily="monospace">DANGER</text>
 
-        {/* Target Badge */}
-        <rect x="25" y="26" width="105" height="14" fill="#f59e0b" rx="2" />
-        <text x="29" y="36" fill="#000000" fontSize="7.5" fontWeight="bold" fontFamily="monospace">
-          FOVEA [x*,y*] · 0.45ms
-        </text>
-
-        {/* ─── RIGHT: SmolVLM-256M Dual-Stream Telemetry & Language Reasoning ─── */}
-        <g transform="translate(168, 22)">
-          {/* Header */}
-          <text x="0" y="10" fill="#f59e0b" fontSize="8" fontWeight="bold" fontFamily="monospace">
-            SMOLVLM-256M REASONING
-          </text>
-
-          {/* Stream 1: Magnocellular Latency */}
-          <text x="0" y="25" fill="#94a3b8" fontSize="7" fontFamily="monospace">Magnocellular Glance:</text>
-          <text x="100" y="25" fill="#10b981" fontSize="7" fontWeight="bold" fontFamily="monospace">&lt;0.6ms</text>
-
-          {/* Stream 2: Parvocellular Zoom */}
-          <text x="0" y="38" fill="#94a3b8" fontSize="7" fontFamily="monospace">Zoom-Lens Crop:</text>
-          <text x="100" y="38" fill="#38bdf8" fontSize="7" fontWeight="bold" fontFamily="monospace">120-560px</text>
-
-          {/* Pixel FLOPs Compression Bar */}
-          <text x="0" y="55" fill="#94a3b8" fontSize="7" fontFamily="monospace">Token / Pixel FLOPs:</text>
-          <rect x="0" y="61" width="138" height="9" fill="#1e293b" rx="2" />
-          {/* 96.7% reduction bar */}
-          <motion.rect
-            x="0" y="61" width="133" height="9" fill="#10b981" rx="2"
-            animate={{ width: [126, 134, 126] }}
+          {/* Scale-Adaptive Zoom Brackets */}
+          <motion.g
+            animate={{ scale: [0.95, 1.05, 0.95] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <text x="4" y="68" fill="#000000" fontSize="6.5" fontWeight="bold" fontFamily="monospace">
-            -96.7% PIXEL REDUCTION
+          >
+            <path d="M -44 -18 L -44 -30 L -32 -30" fill="none" stroke="#f59e0b" strokeWidth="2.5" />
+            <path d="M 44 -18 L 44 -30 L 32 -30" fill="none" stroke="#f59e0b" strokeWidth="2.5" />
+            <path d="M -44 18 L -44 30 L -32 30" fill="none" stroke="#f59e0b" strokeWidth="2.5" />
+            <path d="M 44 18 L 44 30 L 32 30" fill="none" stroke="#f59e0b" strokeWidth="2.5" />
+
+            {/* Central Precision Reticle */}
+            <circle cx="0" cy="0" r="3" fill="none" stroke="#ef4444" strokeWidth="1.2" />
+            <circle cx="0" cy="0" r="1" fill="#ef4444" />
+            <line x1="-8" y1="0" x2="-4" y2="0" stroke="#ef4444" strokeWidth="1" />
+            <line x1="4" y1="0" x2="8" y2="0" stroke="#ef4444" strokeWidth="1" />
+            <line x1="0" y1="-8" x2="0" y2="-4" stroke="#ef4444" strokeWidth="1" />
+            <line x1="0" y1="4" x2="0" y2="8" stroke="#ef4444" strokeWidth="1" />
+          </motion.g>
+
+          <rect x="-42" y="-45" width="84" height="13" fill="#f59e0b" rx="2" />
+          <text x="0" y="-36" fill="#090d16" fontSize="7.5" fontWeight="bold" fontFamily="monospace" textAnchor="middle">
+            FOVEA [x*, y*] · 0.45ms
+          </text>
+        </g>
+
+        {/* ─── RIGHT: Clean Telemetry HUD ─── */}
+        <g transform="translate(168, 30)">
+          <text x="0" y="10" fill="#94a3b8" fontSize="8" fontWeight="bold" fontFamily="monospace">
+            ZOOM-LENS TELEMETRY
           </text>
 
-          {/* VLM Natural Language Reasoning Box */}
-          <rect x="0" y="78" width="138" height="52" fill="#0f172a" stroke="#334155" strokeWidth="1" rx="3" />
-          <text x="6" y="90" fill="#f59e0b" fontSize="6.5" fontWeight="bold" fontFamily="monospace">
-            &gt; SmolVLM-Instruct Output:
-          </text>
-          <text x="6" y="103" fill="#e2e8f0" fontSize="6" fontFamily="monospace">
-            "High-voltage warning label
-          </text>
-          <text x="6" y="114" fill="#ef4444" fontSize="6" fontWeight="bold" fontFamily="monospace">
-            reading '480V AC DANGER'."
-          </text>
+          {/* Bar 1: Pixel Reduction */}
+          <text x="0" y="28" fill="#f59e0b" fontSize="7.5" fontFamily="monospace">Pixel Reduction</text>
+          <text x="108" y="28" fill="#10b981" fontSize="7.5" fontWeight="bold" fontFamily="monospace">-96.7%</text>
+          <rect x="0" y="34" width="138" height="7" fill="#1e293b" rx="2" />
           <motion.rect
-            x="96" y="108" width="5" height="7" fill="#f59e0b"
-            animate={{ opacity: [1, 0, 1] }}
-            transition={{ duration: 0.8, repeat: Infinity }}
+            x="0" y="34" width="133" height="7" fill="#10b981" rx="2"
+            animate={{ width: [126, 134, 126] }}
+            transition={{ duration: 2, repeat: Infinity }}
           />
+
+          {/* Bar 2: Gaze Latency */}
+          <text x="0" y="55" fill="#f59e0b" fontSize="7.5" fontFamily="monospace">Gaze Saccade</text>
+          <text x="108" y="55" fill="#38bdf8" fontSize="7.5" fontWeight="bold" fontFamily="monospace">0.45 ms</text>
+          <rect x="0" y="61" width="138" height="7" fill="#1e293b" rx="2" />
+          <rect x="0" y="61" width="118" height="7" fill="#38bdf8" rx="2" />
+
+          {/* Bar 3: Text Acuity */}
+          <text x="0" y="82" fill="#f59e0b" fontSize="7.5" fontFamily="monospace">Foveal Acuity</text>
+          <text x="108" y="82" fill="#eab308" fontSize="7.5" fontWeight="bold" fontFamily="monospace">100%</text>
+          <rect x="0" y="88" width="138" height="7" fill="#1e293b" rx="2" />
+          <rect x="0" y="88" width="138" height="7" fill="#eab308" rx="2" />
+
+          {/* VLM Caption Preview */}
+          <g transform="translate(0, 106)">
+            <rect x="0" y="0" width="138" height="24" fill="#0f172a" stroke="#1e293b" strokeWidth="1" rx="3" />
+            <text x="6" y="10" fill="#94a3b8" fontSize="6" fontFamily="monospace">SmolVLM Output:</text>
+            <text x="6" y="19" fill="#f59e0b" fontSize="6.5" fontWeight="bold" fontFamily="monospace">"480V AC DANGER"</text>
+          </g>
         </g>
       </svg>
 
-      {/* HUD Overlay Badges */}
+      {/* Clean HUD Badges */}
       <div className="absolute top-2 left-2 inline-flex items-center gap-1.5 font-mono text-[0.55rem] md:text-[0.65rem] font-bold tracking-wider uppercase bg-amber-400 text-black px-2 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
         <motion.span
           className="inline-block h-2 w-2 rounded-full bg-black"
           animate={{ opacity: [1, 0.2, 1] }}
           transition={{ duration: 1, repeat: Infinity }}
         />
-        FOVEAL LOCK · 0.45MS
+        0.45MS FOVEAL LOCK
       </div>
 
-      <div className="absolute top-2 right-2 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-amber-500 text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
-        SigLIP-93M · SmolLM2-135M
-      </div>
-
-      <div className="absolute bottom-2 left-2 hidden sm:inline-flex items-center gap-1.5 font-mono text-[0.5rem] md:text-[0.55rem] font-bold tracking-widest uppercase bg-black text-emerald-400 px-2 py-1 border-2 border-emerald-500">
-        PIXEL FLOPs: -96.7% (2.07M → 69k)
+      <div className="absolute top-2 right-2 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-sky-500 text-white px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
+        SmolVLM-256M
       </div>
 
       <div className="absolute bottom-2 right-2 inline-flex items-center gap-1 font-mono text-[0.5rem] md:text-[0.6rem] font-bold tracking-widest uppercase bg-yellow text-black px-1.5 py-0.5 border-2 border-black shadow-[2px_2px_0px_#0A0A0A]">
-        ERIKSEN ATTENTION ENGINE
+        -96.7% PIXEL FLOPs
       </div>
     </div>
   );
