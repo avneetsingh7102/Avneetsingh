@@ -1513,14 +1513,6 @@ function ActiveGazeArtifact({ size = "card" }: { size?: "card" | "modal" }) {
         <rect width="320" height="180" fill="#090d16" />
         <rect width="320" height="180" fill="url(#activegaze-grid)" opacity="0.5" />
 
-        {/* Peripheral Saccade Glance Laser Beam */}
-        <motion.line
-          x1="0" y1="0" x2="320" y2="0"
-          stroke="#f59e0b" strokeWidth="1.2" opacity="0.6"
-          animate={{ y1: [0, 180, 0], y2: [0, 180, 0] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        />
-
         {/* ─── LEFT: Biological Zoom-Lens Foveal Focus ─── */}
         <g transform="translate(80, 90)">
           {/* Radial Fovea Glow */}
